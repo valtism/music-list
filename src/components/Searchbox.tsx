@@ -4,9 +4,9 @@ import debounce from "lodash.debounce";
 import { AlbumObject } from "spotify-api-types";
 import { Auth, search } from "../api";
 import { useSearchboxState } from "../hooks/useSearchboxState";
+import useOnClickOutside from "../hooks/useClickOutside";
 import { ReactComponent as EnterIcon } from "../images/enter.svg";
 import { ReactComponent as SearchIcon } from "../images/search.svg";
-import useOnClickOutside from "../hooks/useClickOutside";
 
 interface SearchProps {
   auth: Auth;
@@ -38,6 +38,7 @@ export default function SearchBox({ auth, onAlbumSelect }: SearchProps) {
         <input
           ref={inputRef}
           autoCorrect="off"
+          placeholder="Search"
           value={input}
           onChange={(e) => {
             const query = e.target.value;
@@ -102,7 +103,7 @@ export default function SearchBox({ auth, onAlbumSelect }: SearchProps) {
       {!!albums.length && (
         <div
           ref={searchResultsRef}
-          className="absolute w-96 bg-white shadow-lg overflow-auto rounded-b-lg border-2 border-t-0 border-purple-100"
+          className="absolute w-96 bg-white shadow-lg overflow-auto rounded-b-lg border-2 border-t-0 border-purple-100 z-10"
         >
           <ul className="shadow">
             {albums.map((album, i) => (
