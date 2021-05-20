@@ -1,67 +1,12 @@
+import React, { useMemo, useRef } from "react";
 import clsx from "clsx";
-import React, { useMemo, useReducer } from "react";
+import debounce from "lodash.debounce";
 import { AlbumObject } from "spotify-api-types";
 import { Auth, search } from "../api";
-import debounce from "lodash.debounce";
+import { useSearchboxState } from "../hooks/useSearchboxState";
 import { ReactComponent as EnterIcon } from "../images/enter.svg";
 import { ReactComponent as SearchIcon } from "../images/search.svg";
-
-interface Searches {
-  [key: string]: AlbumObject[];
-}
-
-const initialState = {
-  input: "",
-  index: 0,
-  albums: [] as AlbumObject[],
-  searches: {} as Searches,
-};
-
-type ActionType =
-  | { type: "setInput"; payload: string }
-  | { type: "setAlbums"; payload: AlbumObject[] }
-  | { type: "arrowUp" }
-  | { type: "arrowDown" }
-  | { type: "blur" }
-  | { type: "reset" };
-
-function reducer(state: typeof initialState, action: ActionType) {
-  switch (action.type) {
-    case "setInput":
-      return {
-        ...state,
-        input: action.payload,
-        index: 0,
-        albums: state.searches[action.payload] || state.albums,
-      };
-    case "setAlbums":
-      return {
-        ...state,
-        albums: action.payload,
-        searches: { ...state.searches, [state.input]: action.payload },
-      };
-    case "arrowUp": {
-      const { index, albums } = state;
-      return {
-        ...state,
-        index: index <= 0 ? albums.length - 1 : index - 1,
-      };
-    }
-    case "arrowDown": {
-      const { index, albums } = state;
-      return {
-        ...state,
-        index: index >= albums.length - 1 ? 0 : index + 1,
-      };
-    }
-    case "blur":
-      return { ...state, albums: [] };
-    case "reset":
-      return { ...state, input: "", albums: [] };
-    default:
-      throw new Error();
-  }
-}
+import useOnClickOutside from "../hooks/useClickOutside";
 
 interface SearchProps {
   auth: Auth;
@@ -69,22 +14,29 @@ interface SearchProps {
 }
 
 export default function SearchBox({ auth, onAlbumSelect }: SearchProps) {
-  const [state, dispatch] = useReducer(reducer, initialState);
+  const [state, dispatch] = useSearchboxState();
   const { input, index, albums, searches } = state;
 
   const debouncedSearch = useMemo(
     () =>
       debounce(async (query: string) => {
         const albums = await search(auth, query);
-        dispatch({ type: "setAlbums", payload: albums });
+        dispatch({ type: "setAlbums", payload: { albums, query } });
       }, 300),
-    [auth]
+    [auth, dispatch]
+  );
+
+  const inputRef = useRef<HTMLInputElement>(null);
+  const searchResultsRef = useOnClickOutside<HTMLDivElement>(
+    () => dispatch({ type: "blur" }),
+    inputRef
   );
 
   return (
     <div className="w-96">
       <div className="relative group">
         <input
+          ref={inputRef}
           autoCorrect="off"
           value={input}
           onChange={(e) => {
@@ -99,11 +51,19 @@ export default function SearchBox({ auth, onAlbumSelect }: SearchProps) {
           }}
           onFocus={async (e) => {
             e.target.select();
-            if (input) {
+            if (!input) return;
+            if (searches[input]) {
+              dispatch({
+                type: "setAlbums",
+                payload: { albums: searches[input], query: input },
+              });
+            } else {
               const albums = await search(auth, input);
-              dispatch({ type: "setAlbums", payload: albums });
+              dispatch({
+                type: "setAlbums",
+                payload: { albums, query: input },
+              });
             }
-            input ? debouncedSearch(input) : {};
           }}
           onKeyDown={(e) => {
             switch (e.key) {
@@ -128,17 +88,24 @@ export default function SearchBox({ auth, onAlbumSelect }: SearchProps) {
                 break;
             }
           }}
-          className="border border-gray-100 bg-gray-100 rounded px-4 py-2 focus:bg-white focus:border-gray-300 focus:outline-none w-full"
+          className={clsx(
+            "w-full border-2 border-gray-100 bg-gray-100 rounded-lg px-4 py-2",
+            "hover:border-purple-100",
+            "focus:bg-white focus:border-purple-100 focus:outline-none focus:rounded-b-none"
+          )}
         />
         <div className="absolute inset-y-0 right-0 flex items-center pr-4 text-gray-500 pointer-events-none">
           <SearchIcon className="w-4 h-4 fill-current text-gray-400 group-hover:text-gray-600 group-focus-within:text-gray-600" />
         </div>
       </div>
 
-      <div className="absolute w-96 bg-white shadow-lg overflow-auto rounded">
-        <ul className="shadow">
-          {!!albums.length &&
-            albums.map((album, i) => (
+      {!!albums.length && (
+        <div
+          ref={searchResultsRef}
+          className="absolute w-96 bg-white shadow-lg overflow-auto rounded-b-lg border-2 border-t-0 border-purple-100"
+        >
+          <ul className="shadow">
+            {albums.map((album, i) => (
               <SearchItem
                 key={album.id}
                 album={album}
@@ -149,8 +116,9 @@ export default function SearchBox({ auth, onAlbumSelect }: SearchProps) {
                 }}
               />
             ))}
-        </ul>
-      </div>
+          </ul>
+        </div>
+      )}
     </div>
   );
 }
@@ -169,8 +137,8 @@ function SearchItem({ album, isHighlighted, ...props }: SearhItemProps) {
     <li key={album.id}>
       <button
         className={clsx(
-          "relative w-full flex items-center justify-between px-2 py-1.5 hover:bg-pink-100 overflow-hidden",
-          isHighlighted && "bg-pink-100 shadow-inner"
+          "relative w-full flex items-center justify-between px-2 py-1.5 hover:bg-purple-100 overflow-hidden",
+          isHighlighted && "bg-purple-100 shadow-inner"
         )}
         {...props}
       >
@@ -190,9 +158,9 @@ function SearchItem({ album, isHighlighted, ...props }: SearhItemProps) {
         </div>
         {isHighlighted && (
           <div className="absolute right-0 h-full flex items-center pointer-events-none">
-            <div className="w-10 h-full bg-gradient-to-l from-pink-100" />
-            <div className="h-full bg-pink-100 flex items-center">
-              <EnterIcon className="w-4 h-4 px-4 mr-4 fill-current text-pink-600 text-opacity-80 bg-pink-100" />
+            <div className="w-10 h-full bg-gradient-to-l from-purple-100" />
+            <div className="h-full bg-purple-100 flex items-center">
+              <EnterIcon className="w-4 h-4 px-4 mr-4 fill-current text-purple-600 text-opacity-80" />
             </div>
           </div>
         )}

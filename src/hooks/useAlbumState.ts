@@ -18,6 +18,7 @@ type ActionType =
 function reducer(state: typeof initialState, action: ActionType) {
   switch (action.type) {
     case "add":
+      if (state.entities[action.payload.id]) return state;
       return {
         ids: state.ids.concat(action.payload.id),
         entities: { ...state.entities, [action.payload.id]: action.payload },
