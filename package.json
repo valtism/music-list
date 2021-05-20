@@ -7,13 +7,17 @@
     "serve": "vite preview"
   },
   "dependencies": {
+    "@dnd-kit/core": "^3.0.3",
+    "@dnd-kit/sortable": "^3.0.1",
     "clsx": "^1.1.1",
+    "lodash.debounce": "^4.0.8",
     "react": "^17.0.0",
     "react-dom": "^17.0.0",
     "spotify-api-types": "^0.3.9"
   },
   "devDependencies": {
     "@rollup/plugin-eslint": "^8.0.1",
+    "@types/lodash.debounce": "^4.0.6",
     "@types/react": "^17.0.0",
     "@types/react-dom": "^17.0.0",
     "@typescript-eslint/eslint-plugin": "^4.24.0",
