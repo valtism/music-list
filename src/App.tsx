@@ -1,13 +1,15 @@
-import React from "react";
+import React, { useRef } from "react";
 import Searchbox from "./components/Searchbox";
 import { useAuth } from "./hooks/useAuth";
 import Grid, { SortableItem } from "./components/Grid";
 import { useAlbumState } from "./hooks/useAlbumState";
 import AlbumTile from "./components/AlbumTile";
+import { toJpeg } from "html-to-image";
 
 export default function App() {
   const auth = useAuth();
   const [albums, dispatch] = useAlbumState();
+  const ref = useRef<HTMLDivElement>(null);
 
   return (
     <div className="font-nunito flex flex-col space-y-10 items-center pt-10 text-gray-900">
@@ -18,7 +20,7 @@ export default function App() {
         auth={auth}
         onAlbumSelect={(album) => dispatch({ type: "add", payload: album })}
       />
-      <div>
+      <div ref={ref} className="bg-white">
         <Grid
           albums={albums}
           onDragEnd={(event) => {
@@ -49,6 +51,32 @@ export default function App() {
           </div>
         </Grid>
       </div>
+      {!!albums.ids.length && <Export exportRef={ref} />}
     </div>
   );
+}
+
+interface ExportProps {
+  exportRef: React.RefObject<HTMLDivElement>;
+}
+
+function Export({ exportRef }: ExportProps) {
+  return (
+    <button
+      onClick={async () => {
+        if (!exportRef.current) return;
+        const jpg = await toJpeg(exportRef.current);
+        download(jpg, "chart.jpg");
+      }}
+    >
+      Download
+    </button>
+  );
+}
+
+function download(dataurl: string, filename: string) {
+  const a = document.createElement("a");
+  a.href = dataurl;
+  a.setAttribute("download", filename);
+  a.click();
 }

@@ -2,7 +2,7 @@
   "name": "music-list",
   "version": "0.0.0",
   "scripts": {
-    "dev": "vite",
+    "dev": "vite --host 127.0.0.1",
     "build": "tsc && vite build",
     "serve": "vite preview",
     "predeploy": "npm run build",
@@ -12,6 +12,7 @@
     "@dnd-kit/core": "^3.0.3",
     "@dnd-kit/sortable": "^3.0.1",
     "clsx": "^1.1.1",
+    "html-to-image": "^1.6.2",
     "lodash.debounce": "^4.0.8",
     "lodash.omit": "^4.5.0",
     "react": "^17.0.0",
