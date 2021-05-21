@@ -1,5 +1,4 @@
 import { AlbumObject } from "spotify-api-types";
-const spotifyAuth = import.meta.env.VITE_SPOTIFY_AUTHORIZATION as string;
 
 export interface Auth {
   token: string;
@@ -7,12 +6,11 @@ export interface Auth {
 }
 
 export async function authorize(): Promise<Auth> {
-  const res = await fetch("https://accounts.spotify.com/api/token", {
-    method: "POST",
-    headers: { Authorization: spotifyAuth },
-    body: new URLSearchParams({ grant_type: "client_credentials" }),
-  });
+  const res = await fetch(
+    "https://1pd7ps5dmd.execute-api.ap-southeast-2.amazonaws.com/default/spotifyAuth"
+  );
   const { access_token, token_type, expires_in } = await res.json();
+
   const expirationTime = Date.now() + (expires_in - 100) * 1000;
   return {
     token: `${token_type} ${access_token}`,
