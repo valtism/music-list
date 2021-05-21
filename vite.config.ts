@@ -10,4 +10,5 @@ export default defineConfig({
     svgr(),
     eslint({ include: ["./src/**/*.vue", "./src/**/*.js"] }),
   ],
+  base: "/music-list/",
 });
