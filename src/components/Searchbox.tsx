@@ -96,11 +96,18 @@ export default function SearchBox({ auth, onAlbumSelect }: SearchProps) {
             "w-full border-2 border-gray-100 bg-gray-100 rounded-lg px-4 py-2",
             "hover:border-purple-100",
             "focus:bg-white focus:border-purple-100 focus:outline-none",
-            albums.length && "rounded-b-none bg-white border-purple-100 outline-none"
+            albums.length &&
+              "rounded-b-none bg-white border-purple-100 outline-none"
           )}
         />
         <div className="absolute inset-y-0 right-0 flex items-center pr-4 pointer-events-none">
-          <SearchIcon className="w-4 h-4 fill-current text-gray-400 group-hover:text-gray-500 group-focus-within:text-gray-500" />
+          <SearchIcon
+            className={clsx(
+              "w-4 h-4 fill-current text-gray-400",
+              "group-hover:text-purple-500 group-hover:text-opacity-80",
+              "group-focus-within:text-purple-500 group-focus-within:text-opacity-80"
+            )}
+          />
         </div>
       </div>
 
