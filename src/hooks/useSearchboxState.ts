@@ -27,7 +27,7 @@ function reducer(state: typeof initialState, action: ActionType) {
         ...state,
         input: action.payload,
         index: 0,
-        albums: state.searches[action.payload] || state.albums,
+        albums: state.searches[action.payload] || "",
       };
     case "setAlbums":
       return {

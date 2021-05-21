@@ -2,9 +2,11 @@ import React, { useMemo, useRef } from "react";
 import clsx from "clsx";
 import debounce from "lodash.debounce";
 import { AlbumObject } from "spotify-api-types";
+
 import { Auth, search } from "../api";
 import { useSearchboxState } from "../hooks/useSearchboxState";
 import useOnClickOutside from "../hooks/useClickOutside";
+
 import { ReactComponent as EnterIcon } from "../images/enter.svg";
 import { ReactComponent as SearchIcon } from "../images/search.svg";
 
@@ -33,7 +35,31 @@ export default function SearchBox({ auth, onAlbumSelect }: SearchProps) {
   );
 
   return (
-    <div className="w-96">
+    <div
+      className="w-96"
+      onKeyDown={(e) => {
+        switch (e.key) {
+          case "ArrowUp":
+            e.preventDefault();
+            return dispatch({ type: "arrowUp" });
+          case "ArrowDown":
+            e.preventDefault();
+            return dispatch({ type: "arrowDown" });
+          case "Enter":
+            e.preventDefault();
+            if (!albums[index]) return;
+            onAlbumSelect(albums[index]);
+            debouncedSearch.cancel();
+            return dispatch({ type: "reset" });
+          case "Escape":
+            e.preventDefault();
+            debouncedSearch.cancel();
+            return dispatch({ type: "reset" });
+          default:
+            break;
+        }
+      }}
+    >
       <div className="relative group">
         <input
           ref={inputRef}
@@ -66,37 +92,15 @@ export default function SearchBox({ auth, onAlbumSelect }: SearchProps) {
               });
             }
           }}
-          onKeyDown={(e) => {
-            switch (e.key) {
-              case "ArrowUp":
-                e.preventDefault();
-                return dispatch({ type: "arrowUp" });
-              case "ArrowDown":
-                e.preventDefault();
-                return dispatch({ type: "arrowDown" });
-              case "Enter":
-                e.preventDefault();
-                if (!albums[index]) return;
-                onAlbumSelect(albums[index]);
-                debouncedSearch.cancel();
-                return dispatch({ type: "reset" });
-              case "Escape":
-                e.preventDefault();
-                debouncedSearch.cancel();
-                return dispatch({ type: "reset" });
-              case "Tab":
-              default:
-                break;
-            }
-          }}
           className={clsx(
             "w-full border-2 border-gray-100 bg-gray-100 rounded-lg px-4 py-2",
             "hover:border-purple-100",
-            "focus:bg-white focus:border-purple-100 focus:outline-none focus:rounded-b-none"
+            "focus:bg-white focus:border-purple-100 focus:outline-none",
+            albums.length && "rounded-b-none bg-white border-purple-100 outline-none"
           )}
         />
-        <div className="absolute inset-y-0 right-0 flex items-center pr-4 text-gray-500 pointer-events-none">
-          <SearchIcon className="w-4 h-4 fill-current text-gray-400 group-hover:text-gray-600 group-focus-within:text-gray-600" />
+        <div className="absolute inset-y-0 right-0 flex items-center pr-4 pointer-events-none">
+          <SearchIcon className="w-4 h-4 fill-current text-gray-400 group-hover:text-gray-500 group-focus-within:text-gray-500" />
         </div>
       </div>
 
@@ -138,12 +142,13 @@ function SearchItem({ album, isHighlighted, ...props }: SearhItemProps) {
     <li key={album.id}>
       <button
         className={clsx(
-          "relative w-full flex items-center justify-between px-2 py-1.5 hover:bg-purple-100 overflow-hidden",
-          isHighlighted && "bg-purple-100 shadow-inner"
+          "group relative w-full flex items-center justify-between px-2 py-1.5 hover:bg-purple-100 overflow-hidden",
+          "focus:outline-none",
+          isHighlighted && "bg-purple-100"
         )}
         {...props}
       >
-        <div className="flex items-center space-x-2 overflow-hidden">
+        <div className="relative w-full flex items-center space-x-2 overflow-hidden">
           <img src={album.images[2].url} className="w-10 h-10 rounded" />
           <div className="flex flex-col items-start leading-5">
             <div title={album.name} className="whitespace-nowrap">
@@ -156,12 +161,13 @@ function SearchItem({ album, isHighlighted, ...props }: SearhItemProps) {
               {album.artists[0].name}
             </div>
           </div>
+          <div className="absolute h-full w-4 right-0 bg-gradient-to-l from-white group-hover:from-purple-100" />
         </div>
         {isHighlighted && (
           <div className="absolute right-0 h-full flex items-center pointer-events-none">
             <div className="w-10 h-full bg-gradient-to-l from-purple-100" />
-            <div className="h-full bg-purple-100 flex items-center">
-              <EnterIcon className="w-4 h-4 px-4 mr-4 fill-current text-purple-600 text-opacity-80" />
+            <div className="h-full bg-purple-100 flex items-center px-4">
+              <EnterIcon className="w-4 h-4 fill-current text-purple-600 text-opacity-60 flex-shrink-0" />
             </div>
           </div>
         )}

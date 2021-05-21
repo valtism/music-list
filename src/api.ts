@@ -13,7 +13,7 @@ export async function authorize(): Promise<Auth> {
     body: new URLSearchParams({ grant_type: "client_credentials" }),
   });
   const { access_token, token_type, expires_in } = await res.json();
-  const expirationTime = Date.now() + (expires_in - 20) * 1000;
+  const expirationTime = Date.now() + (expires_in - 100) * 1000;
   return {
     token: `${token_type} ${access_token}`,
     expiresAt: expirationTime,
