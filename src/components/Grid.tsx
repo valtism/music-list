@@ -6,7 +6,8 @@ import {
   DragEndEvent,
   DragOverlay,
   KeyboardSensor,
-  PointerSensor,
+  MouseSensor,
+  TouchSensor,
   useSensor,
   useSensors,
 } from "@dnd-kit/core";
@@ -30,7 +31,12 @@ export default function Grid({ albums, onDragEnd, children }: GridProps) {
   const [activeId, setActiveId] = useState<string | null>(null);
   const items = albums.ids.map((id) => albums.entities[id]);
   const sensors = useSensors(
-    useSensor(PointerSensor, {
+    useSensor(MouseSensor, {
+      activationConstraint: {
+        distance: 15,
+      },
+    }),
+    useSensor(TouchSensor, {
       activationConstraint: {
         distance: 15,
       },

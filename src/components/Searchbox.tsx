@@ -29,7 +29,7 @@ export default function SearchBox({ auth, onAlbumSelect }: SearchProps) {
   );
 
   const inputRef = useRef<HTMLInputElement>(null);
-  const searchResultsRef = useOnClickOutside<HTMLDivElement>(
+  const searchResultsRef = useOnClickOutside<HTMLUListElement>(
     () => dispatch({ type: "blur" }),
     inputRef
   );
@@ -112,24 +112,22 @@ export default function SearchBox({ auth, onAlbumSelect }: SearchProps) {
       </div>
 
       {!!albums.length && (
-        <div
+        <ul
           ref={searchResultsRef}
-          className="absolute w-96 bg-white shadow-lg overflow-auto rounded-b-lg border-2 border-t-0 border-purple-100 z-10"
+          className="absolute z-10 w-96 bg-white shadow-xl overflow-auto rounded-b-lg border-2 border-t-0 border-purple-100 divide-y-2 divide-purple-100"
         >
-          <ul className="shadow">
-            {albums.map((album, i) => (
-              <SearchItem
-                key={album.id}
-                album={album}
-                isHighlighted={i === index}
-                onClick={() => {
-                  onAlbumSelect(album);
-                  dispatch({ type: "reset" });
-                }}
-              />
-            ))}
-          </ul>
-        </div>
+          {albums.map((album, i) => (
+            <SearchItem
+              key={album.id}
+              album={album}
+              isHighlighted={i === index}
+              onClick={() => {
+                onAlbumSelect(album);
+                dispatch({ type: "reset" });
+              }}
+            />
+          ))}
+        </ul>
       )}
     </div>
   );
