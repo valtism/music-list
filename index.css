@@ -1,3 +1,8 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Tailwind reset misses non-nested li, which we need for the drag preview */
+li {
+  list-style-type: none;
+}

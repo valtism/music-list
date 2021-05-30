@@ -35,20 +35,21 @@ export default function App() {
             });
           }}
         >
-          <div className="container mx-auto px-20">
+          <ul className="container mx-auto px-20">
             {albums.ids
               .map((id) => albums.entities[id])
-              .map((album) => (
+              .map((album, index) => (
                 <SortableItem key={album.id} id={album.id}>
                   <AlbumTile
                     album={album}
                     onCloseClick={() =>
                       dispatch({ type: "delete", payload: album.id })
                     }
+                    style={{ width: index === 0 ? 300 : 198 }}
                   />
                 </SortableItem>
               ))}
-          </div>
+          </ul>
         </Grid>
       </div>
       {!!albums.ids.length && <Export exportRef={ref} />}

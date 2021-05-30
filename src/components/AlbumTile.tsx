@@ -4,8 +4,8 @@ import { ReactComponent as CloseIcon } from "../images/close.svg";
 
 interface AlbumTileProps
   extends React.DetailedHTMLProps<
-    React.HTMLAttributes<HTMLDivElement>,
-    HTMLDivElement
+    React.LiHTMLAttributes<HTMLLIElement>,
+    HTMLLIElement
   > {
   album: AlbumObject;
   onCloseClick?: () => void;
@@ -17,8 +17,8 @@ export default function AlbumTile({
   ...props
 }: AlbumTileProps) {
   return (
-    <div {...props}>
-      <div className="group relative w-48 p-2 rounded overflow-hidden bg-white">
+    <li {...props}>
+      <div className="group relative p-2 rounded overflow-hidden bg-white">
         <div className="relative flex flex-col">
           {onCloseClick && (
             <button
@@ -37,12 +37,9 @@ export default function AlbumTile({
             className="rounded self-center mb-1"
           />
           <div className="flex flex-col whitespace-nowrap">
-            <div
-              title={album.name}
-              className="relative overflow-hidden"
-            >
+            <div title={album.name} className="relative overflow-hidden">
               <span className="text-sm">{album.name}</span>
-              <div className="absolute right-0 top-0 h-full w-4 bg-gradient-to-l from-white via-white"/>
+              <div className="absolute right-0 top-0 h-full w-4 bg-gradient-to-l from-white via-white" />
             </div>
             <div
               title={album.artists[0].name}
@@ -53,6 +50,6 @@ export default function AlbumTile({
           </div>
         </div>
       </div>
-    </div>
+    </li>
   );
 }

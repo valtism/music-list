@@ -20,6 +20,7 @@ import {
 import { CSS } from "@dnd-kit/utilities";
 import { Albums } from "../hooks/useAlbumState";
 import AlbumTile from "./AlbumTile";
+import { createPortal } from "react-dom";
 
 interface GridProps {
   albums: Albums;
@@ -59,11 +60,17 @@ export default function Grid({ albums, onDragEnd, children }: GridProps) {
       <SortableContext items={items} strategy={rectSortingStrategy}>
         {children}
       </SortableContext>
-      <DragOverlay>
-        {activeId ? (
-          <AlbumTile album={albums.entities[activeId]} className="shadow-xl" />
-        ) : null}
-      </DragOverlay>
+      {createPortal(
+        <DragOverlay adjustScale={true}>
+          {activeId ? (
+            <AlbumTile
+              album={albums.entities[activeId]}
+              className="shadow-xl"
+            />
+          ) : null}
+        </DragOverlay>,
+        document.body
+      )}
     </DndContext>
   );
 }
