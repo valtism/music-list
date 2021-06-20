@@ -17,7 +17,7 @@ export default function AlbumTile({
   return (
     <div
       className={clsx(
-        "group relative w-full h-full rounded overflow-hidden bg-white",
+        "group w-full h-full rounded overflow-hidden",
         className
       )}
     >
@@ -33,7 +33,7 @@ export default function AlbumTile({
         <img
           src={album.images[1].url}
           onDragStart={(e) => e.preventDefault()}
-          className="rounded self-center mb-1"
+          className=" self-center mb-1"
         />
       </div>
 

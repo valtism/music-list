@@ -32,7 +32,7 @@ export default function App() {
             sort(active.id, over.id);
           }}
         >
-          <ul className="container relative w-[90vw] h-[90vw] max-w-[576px] max-h-[576px]">
+          <ul className="container leading-[0px] w-[90vw] h-[90vw] max-w-[576px] max-h-[576px]">
             {ids.map((id) => {
               const album = entities[id];
               return (

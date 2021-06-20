@@ -94,7 +94,7 @@ export function SortableItem({
     transform,
     transition,
     isDragging,
-  } = useSortable({ id });
+  } = useSortable({ id, animateLayoutChanges: () => false });
 
   const style = {
     transform: CSS.Transform.toString(transform),
