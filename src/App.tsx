@@ -1,64 +1,69 @@
 import React, { useRef } from "react";
-import Searchbox from "./components/Searchbox";
-import { useAuth } from "./hooks/useAuth";
-import Grid, { SortableItem } from "./components/Grid";
-import { useAlbumState } from "./hooks/useAlbumState";
-import AlbumTile from "./components/AlbumTile";
 import { toJpeg } from "html-to-image";
+import clsx from "clsx";
+
+import Searchbox from "./components/Searchbox";
+import AlbumTile from "./components/AlbumTile";
+import { useAlbumStore } from "./hooks/useAlbumStore";
+import Grid, { SortableItem } from "./components/Grid";
+import { useAuth } from "./hooks/useAuth";
 
 export default function App() {
   const auth = useAuth();
-  const [albums, dispatch] = useAlbumState();
-  const ref = useRef<HTMLDivElement>(null);
+  const ids = useAlbumStore((state) => state.ids);
+  const entities = useAlbumStore((state) => state.entities);
+  const add = useAlbumStore((state) => state.add);
+  const sort = useAlbumStore((state) => state.sort);
+  const remove = useAlbumStore((state) => state.remove);
+  const exportRef = useRef<HTMLDivElement>(null);
 
   return (
     <div className="font-nunito flex flex-col space-y-10 items-center pt-10 text-gray-900">
-      <h1 className="font-work text-5xl bg-gradient-to-r from-purple-500 to-pink-400 bg-clip-text text-transparent">
+      <h1 className="font-work text-5xl bg-gradient-to-r from-pink-400 via-purple-500 to-pink-400 bg-clip-text text-transparent animate-stripes motion-reduce:animate-none filter drop-shadow-lg">
         Music List
       </h1>
-      <Searchbox
-        auth={auth}
-        onAlbumSelect={(album) => dispatch({ type: "add", payload: album })}
-      />
-      <div ref={ref} className="bg-white">
+      <Searchbox auth={auth} onAlbumSelect={(album) => add(album)} />
+      <div ref={exportRef} className="bg-white">
         <Grid
-          albums={albums}
-          onDragEnd={(event) => {
-            const { active, over } = event;
+          items={ids}
+          onDragEnd={({ active, over }) => {
             if (!over) return;
             if (active.id === over.id) return;
-            const oldIndex = albums.ids.indexOf(active.id);
-            const newIndex = albums.ids.indexOf(over.id);
-            dispatch({
-              type: "sort",
-              payload: { id: active.id, from: oldIndex, to: newIndex },
-            });
+            sort(active.id, over.id);
           }}
         >
-          <ul className="container mx-auto px-20">
-            {albums.ids
-              .map((id) => albums.entities[id])
-              .map((album, index) => (
-                <SortableItem key={album.id} id={album.id}>
-                  <AlbumTile
-                    album={album}
-                    onCloseClick={() =>
-                      dispatch({ type: "delete", payload: album.id })
-                    }
-                    style={{ width: index === 0 ? 300 : 198 }}
-                  />
+          <ul className="container relative w-[90vw] h-[90vw] max-w-[576px] max-h-[576px]">
+            {ids.map((id) => {
+              const album = entities[id];
+              return (
+                <SortableItem
+                  key={id}
+                  id={id}
+                  className={clsx(
+                    "inline-block focus:outline-none cursor-default w-1/3 h-1/3"
+                  )}
+                  dragClassNames="opacity-30"
+                >
+                  {album ? (
+                    <AlbumTile album={album} onCloseClick={() => remove(id)} />
+                  ) : (
+                    <div className="h-full w-full bg-gray-200 p-2 rounded">
+                      <div className="h-full w-full bg-gray-400 rounded"></div>
+                    </div>
+                  )}
                 </SortableItem>
-              ))}
+              );
+            })}
           </ul>
         </Grid>
       </div>
-      {!!albums.ids.length && <Export exportRef={ref} />}
+      <Export exportRef={exportRef} />
     </div>
   );
 }
 
 interface ExportProps {
-  exportRef: React.RefObject<HTMLDivElement>;
+  exportRef: React.RefObject<HTMLElement>;
 }
 
 function Export({ exportRef }: ExportProps) {

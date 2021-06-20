@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { createPortal } from "react-dom";
 import clsx from "clsx";
 import {
   closestCenter,
@@ -12,25 +13,23 @@ import {
   useSensors,
 } from "@dnd-kit/core";
 import {
-  rectSortingStrategy,
+  rectSwappingStrategy,
   SortableContext,
   sortableKeyboardCoordinates,
   useSortable,
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { Albums } from "../hooks/useAlbumState";
 import AlbumTile from "./AlbumTile";
-import { createPortal } from "react-dom";
+import { useAlbumStore } from "../hooks/useAlbumStore";
 
 interface GridProps {
-  albums: Albums;
+  items: string[];
   onDragEnd: (event: DragEndEvent) => void;
   children: React.ReactNode;
 }
 
-export default function Grid({ albums, onDragEnd, children }: GridProps) {
+export default function Grid({ items, onDragEnd, children }: GridProps) {
   const [activeId, setActiveId] = useState<string | null>(null);
-  const items = albums.ids.map((id) => albums.entities[id]);
   const sensors = useSensors(
     useSensor(MouseSensor, {
       activationConstraint: {
@@ -46,6 +45,7 @@ export default function Grid({ albums, onDragEnd, children }: GridProps) {
       coordinateGetter: sortableKeyboardCoordinates,
     })
   );
+  const album = useAlbumStore((state) => state.entities[activeId || ""]);
 
   return (
     <DndContext
@@ -53,21 +53,17 @@ export default function Grid({ albums, onDragEnd, children }: GridProps) {
       collisionDetection={closestCenter}
       onDragStart={(event) => setActiveId(event.active.id)}
       onDragEnd={(event) => {
-        setActiveId(null);
         onDragEnd(event);
+        setActiveId(null);
       }}
+      onDragCancel={() => setActiveId(null)}
     >
-      <SortableContext items={items} strategy={rectSortingStrategy}>
+      <SortableContext items={items} strategy={rectSwappingStrategy}>
         {children}
       </SortableContext>
       {createPortal(
         <DragOverlay adjustScale={true}>
-          {activeId ? (
-            <AlbumTile
-              album={albums.entities[activeId]}
-              className="shadow-xl"
-            />
-          ) : null}
+          {album && <AlbumTile album={album} className="shadow-xl" />}
         </DragOverlay>,
         document.body
       )}
@@ -75,12 +71,22 @@ export default function Grid({ albums, onDragEnd, children }: GridProps) {
   );
 }
 
-interface SortableItemProps {
+interface SortableItemProps
+  extends React.DetailedHTMLProps<
+    React.LiHTMLAttributes<HTMLLIElement>,
+    HTMLLIElement
+  > {
   id: string;
+  dragClassNames: string;
   children: React.ReactNode;
 }
 
-export function SortableItem({ id, children }: SortableItemProps) {
+export function SortableItem({
+  id,
+  dragClassNames,
+  children,
+  ...props
+}: SortableItemProps) {
   const {
     attributes,
     listeners,
@@ -96,17 +102,15 @@ export function SortableItem({ id, children }: SortableItemProps) {
   };
 
   return (
-    <div
+    <li
+      {...props}
       ref={setNodeRef}
       style={style}
-      className={clsx(
-        "inline-block focus:outline-none cursor-default",
-        isDragging && "invisible"
-      )}
       {...attributes}
       {...listeners}
+      className={clsx(props.className, isDragging && dragClassNames)}
     >
       {children}
-    </div>
+    </li>
   );
 }

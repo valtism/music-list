@@ -9,6 +9,14 @@ module.exports = {
         nunito: ["Nunito", "sans-serif"],
         work: ["Work Sans", "sans-serif"],
       },
+      animation: {
+        stripes: "stripes 10s linear infinite",
+      },
+      keyframes: {
+        stripes: {
+          "100%": { backgroundPosition: "241px 0" },
+        },
+      },
     },
   },
   variants: {

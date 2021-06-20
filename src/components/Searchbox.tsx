@@ -36,7 +36,7 @@ export default function SearchBox({ auth, onAlbumSelect }: SearchProps) {
 
   return (
     <div
-      className="w-96"
+      className="w-96 max-w-[calc(100%-16px)]"
       onKeyDown={(e) => {
         switch (e.key) {
           case "ArrowUp":
@@ -114,7 +114,7 @@ export default function SearchBox({ auth, onAlbumSelect }: SearchProps) {
       {!!albums.length && (
         <ul
           ref={searchResultsRef}
-          className="absolute z-10 w-96 bg-white shadow-xl overflow-auto rounded-b-lg border-2 border-t-0 border-purple-100 divide-y-2 divide-purple-100"
+          className="absolute z-10 w-96 max-w-[calc(100%-16px)] bg-white shadow-xl overflow-auto rounded-b-lg border-2 border-t-0 border-purple-100 divide-y-2 divide-purple-100"
         >
           {albums.map((album, i) => (
             <SearchItem
