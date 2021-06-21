@@ -1,6 +1,5 @@
 import React, { useRef } from "react";
 import { toJpeg } from "html-to-image";
-import clsx from "clsx";
 
 import Searchbox from "./components/Searchbox";
 import AlbumTile from "./components/AlbumTile";
@@ -23,39 +22,50 @@ export default function App() {
         Music List
       </h1>
       <Searchbox auth={auth} onAlbumSelect={(album) => add(album)} />
-      <div ref={exportRef} className="bg-white">
-        <Grid
-          items={ids}
-          onDragEnd={({ active, over }) => {
-            if (!over) return;
-            if (active.id === over.id) return;
-            sort(active.id, over.id);
-          }}
-        >
-          <ul className="container leading-[0px] w-[90vw] h-[90vw] max-w-[576px] max-h-[576px]">
-            {ids.map((id) => {
-              const album = entities[id];
-              return (
-                <SortableItem
-                  key={id}
-                  id={id}
-                  className={clsx(
-                    "inline-block focus:outline-none cursor-default w-1/3 h-1/3"
-                  )}
-                  dragClassNames="opacity-30"
-                >
-                  {album ? (
-                    <AlbumTile album={album} onCloseClick={() => remove(id)} />
-                  ) : (
-                    <div className="h-full w-full bg-gray-200 p-2 rounded">
-                      <div className="h-full w-full bg-gray-400 rounded"></div>
-                    </div>
-                  )}
-                </SortableItem>
-              );
-            })}
-          </ul>
-        </Grid>
+      <div>
+        <div ref={exportRef} className="bg-white">
+          <Grid
+            items={ids}
+            onDragEnd={({ active, over }) => {
+              if (!over) return;
+              if (active.id === over.id) return;
+              sort(active.id, over.id);
+            }}
+          >
+            <ul
+              style={{
+                lineHeight: 0,
+                width: "90vw",
+                height: "90vw",
+                maxWidth: 576,
+                maxHeight: 576,
+              }}
+            >
+              {ids.map((id) => {
+                const album = entities[id];
+                return (
+                  <SortableItem
+                    key={id}
+                    id={id}
+                    className="inline-flex w-1/3 h-1/3 overflow-hidden cursor-default focus:outline-none focus:ring-4 focus:relative ring-purple-300"
+                    dragClassNames="opacity-30 focus:ring-0"
+                  >
+                    {album ? (
+                      <AlbumTile
+                        album={album}
+                        onCloseClick={() => remove(id)}
+                      />
+                    ) : (
+                      <div className="flex flex-1 bg-gray-200 bg-opacity-90">
+                        {/* <div className="flex-1 bg-gray-400 rounded"></div> */}
+                      </div>
+                    )}
+                  </SortableItem>
+                );
+              })}
+            </ul>
+          </Grid>
+        </div>
       </div>
       <Export exportRef={exportRef} />
     </div>

@@ -17,7 +17,7 @@ export default function AlbumTile({
   return (
     <div
       className={clsx(
-        "group w-full h-full rounded overflow-hidden",
+        "group overflow-hidden",
         className
       )}
     >
@@ -31,13 +31,13 @@ export default function AlbumTile({
           />
         )}
         <img
-          src={album.images[1].url}
+          src={album.images[0].url}
           onDragStart={(e) => e.preventDefault()}
-          className=" self-center mb-1"
+          className="self-center"
         />
       </div>
 
-      <Details album={album} />
+      {/* <Details album={album} /> */}
     </div>
   );
 }
