@@ -110,7 +110,7 @@ export function SortableItem({
     <li
       {...props}
       ref={setNodeRef}
-      style={style}
+      style={{ touchAction: "none", ...style }}
       {...attributes}
       {...listeners}
       className={clsx(props.className, isDragging && dragClassNames)}

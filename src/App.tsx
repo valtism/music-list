@@ -1,10 +1,10 @@
 import React, { useRef } from "react";
-import { toJpeg } from "html-to-image";
 
 import Searchbox from "./components/Searchbox";
 import AlbumTile from "./components/AlbumTile";
 import { useAlbumStore } from "./hooks/useAlbumStore";
 import Grid, { SortableItem } from "./components/Grid";
+import DownloadButton from "./components/DownloadButton";
 import { useAuth } from "./hooks/useAuth";
 
 export default function App() {
@@ -67,32 +67,9 @@ export default function App() {
           </Grid>
         </div>
       </div>
-      <Export exportRef={exportRef} />
+      <div className="pb-10">
+        <DownloadButton exportRef={exportRef} />
+      </div>
     </div>
   );
-}
-
-interface ExportProps {
-  exportRef: React.RefObject<HTMLElement>;
-}
-
-function Export({ exportRef }: ExportProps) {
-  return (
-    <button
-      onClick={async () => {
-        if (!exportRef.current) return;
-        const jpg = await toJpeg(exportRef.current);
-        download(jpg, "chart.jpg");
-      }}
-    >
-      Download
-    </button>
-  );
-}
-
-function download(dataurl: string, filename: string) {
-  const a = document.createElement("a");
-  a.href = dataurl;
-  a.setAttribute("download", filename);
-  a.click();
 }
