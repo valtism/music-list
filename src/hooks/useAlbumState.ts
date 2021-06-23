@@ -6,7 +6,7 @@ import { selectAtom, useAtomValue } from "jotai/utils";
 export const gridIdsAtom = atom(
   Array(9)
     .fill(null)
-    .map((e, i) => i.toString())
+    .map((_, i) => i.toString())
 );
 
 export const albumsAtom = atom<{ [key: string]: AlbumObject | null }>(

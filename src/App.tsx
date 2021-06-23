@@ -22,7 +22,7 @@ export default function App() {
   const exportRef = useRef<HTMLDivElement>(null);
 
   return (
-    <div className="font-nunito flex flex-col space-y-10 items-center pt-10 text-gray-900">
+    <div className="font-nunito flex flex-col space-y-10 items-center px-4 py-10 text-gray-900">
       <h1 className="font-work text-5xl bg-gradient-to-r from-pink-400 via-purple-500 to-pink-400 bg-clip-text text-transparent animate-stripes motion-reduce:animate-none filter drop-shadow-lg">
         Music List
       </h1>
@@ -53,9 +53,7 @@ export default function App() {
           </Grid>
         </div>
       </div>
-      <div className="pb-10">
-        <DownloadButton exportRef={exportRef} />
-      </div>
+      <DownloadButton exportRef={exportRef} />
     </div>
   );
 }

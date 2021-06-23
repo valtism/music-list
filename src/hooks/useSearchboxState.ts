@@ -1,68 +1,40 @@
-import { useReducer } from "react";
+import { atom } from "jotai";
 import { AlbumObject } from "spotify-api-types";
 
 interface Searches {
   [key: string]: AlbumObject[];
 }
 
-const initialState = {
-  input: "",
-  index: 0,
-  albums: [] as AlbumObject[],
-  searches: {} as Searches,
-};
+export const inputAtom = atom("");
+export const indexAtom = atom(0);
+export const resultsAtom = atom<AlbumObject[]>([]);
+export const searchesAtom = atom<Searches>({});
 
-type ActionType =
-  | { type: "setInput"; payload: string }
-  | { type: "setAlbums"; payload: { albums: AlbumObject[]; query: string } }
-  | { type: "arrowUp" }
-  | { type: "arrowDown" }
-  | { type: "blur" }
-  | { type: "reset" };
-
-function reducer(state: typeof initialState, action: ActionType) {
-  switch (action.type) {
-    case "setInput":
-      return {
-        ...state,
-        input: action.payload,
-        index: 0,
-        albums: state.searches[action.payload] || state.albums,
-      };
-    case "setAlbums":
-      return {
-        ...state,
-        albums: state.searches[state.input]
-          ? state.searches[state.input]
-          : action.payload.albums,
-        searches: {
-          ...state.searches,
-          [action.payload.query]: action.payload.albums,
-        },
-      };
-    case "arrowUp": {
-      const { index, albums } = state;
-      return {
-        ...state,
-        index: index <= 0 ? albums.length - 1 : index - 1,
-      };
-    }
-    case "arrowDown": {
-      const { index, albums } = state;
-      return {
-        ...state,
-        index: index >= albums.length - 1 ? 0 : index + 1,
-      };
-    }
-    case "blur":
-      return { ...state, albums: [] };
-    case "reset":
-      return { ...state, input: "", albums: [] };
-    default:
-      throw new Error();
+export const updateInputAtom = atom(null, (get, set, input: string) => {
+  set(inputAtom, input);
+  set(indexAtom, 0);
+  const searches = get(searchesAtom);
+  if (searches[input]) {
+    set(resultsAtom, searches[input]);
   }
+});
+
+interface SetAlbumsProps {
+  albums: AlbumObject[];
+  query: string;
 }
 
-export function useSearchboxState() {
-  return useReducer(reducer, initialState);
-}
+export const setFetchedResultsAtom = atom(
+  null,
+  (get, set, { albums, query }: SetAlbumsProps) => {
+    const searches = get(searchesAtom);
+    const input = get(inputAtom);
+    set(resultsAtom, searches[input] || albums);
+    set(searchesAtom, { ...searches, [query]: albums });
+  }
+);
+
+export const resetSearchAtom = atom(null, (get, set) => {
+  set(inputAtom, "");
+  set(resultsAtom, []);
+});
