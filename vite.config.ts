@@ -11,4 +11,7 @@ export default defineConfig({
     eslint({ include: ["./src/**/*.vue", "./src/**/*.js"] }),
   ],
   base: "/music-list/",
+  build: {
+    sourcemap: true,
+  },
 });
