@@ -1,12 +1,11 @@
 import { useEffect } from "react";
-import { Auth, authorize } from "../api";
-import useLocalStorage from "./useLocalStorage";
+import { useAtom } from "jotai";
 
-export function useAuth() {
-  const [auth, setAuth] = useLocalStorage<Auth>("auth", {
-    token: "",
-    expiresAt: Date.now(),
-  });
+import { authorize } from "../api";
+import { authAtom } from "../state/appState";
+
+export function useFetchAuth() {
+  const [auth, setAuth] = useAtom(authAtom);
 
   useEffect(() => {
     if (auth.token && auth.expiresAt > Date.now()) return;

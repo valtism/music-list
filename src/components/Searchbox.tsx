@@ -5,8 +5,10 @@ import { AlbumObject } from "spotify-api-types";
 import { useAtom } from "jotai";
 import { useAtomValue, useUpdateAtom } from "jotai/utils";
 
-import { Auth, search } from "../api";
+import { search } from "../api";
 import useOnClickOutside from "../hooks/useClickOutside";
+import { authAtom } from "../state/appState";
+import { addAlbumAtom } from "../state/albumState";
 import {
   resultsAtom,
   indexAtom,
@@ -15,21 +17,18 @@ import {
   setFetchedResultsAtom,
   updateInputAtom,
   resetSearchAtom,
-} from "../hooks/useSearchboxState";
+} from "../state/searchboxState";
 
 import { ReactComponent as EnterIcon } from "../images/enter.svg";
 import { ReactComponent as SearchIcon } from "../images/search.svg";
 
-interface SearchProps {
-  auth: Auth;
-  onAlbumSelect: (album: AlbumObject) => void;
-}
-
-export default function SearchBox({ auth, onAlbumSelect }: SearchProps) {
+export default function SearchBox() {
+  const auth = useAtomValue(authAtom);
   const input = useAtomValue(inputAtom);
   const [index, setIndex] = useAtom(indexAtom);
   const [results, setResults] = useAtom(resultsAtom);
   const searches = useAtomValue(searchesAtom);
+  const addAlbum = useUpdateAtom(addAlbumAtom);
 
   const setInput = useUpdateAtom(updateInputAtom);
   const setFetchedResults = useUpdateAtom(setFetchedResultsAtom);
@@ -67,13 +66,14 @@ export default function SearchBox({ auth, onAlbumSelect }: SearchProps) {
             setIndex(nextIndex);
             break;
           case "Tab":
+            if (!results.length) return true
             e.preventDefault();
             setIndex(e.shiftKey ? previousIndex : nextIndex);
             break;
           case "Enter":
             e.preventDefault();
             if (!results[index]) return;
-            onAlbumSelect(results[index]);
+            addAlbum(results[index]);
             resetSearch();
             break;
           case "Escape":
@@ -99,7 +99,6 @@ export default function SearchBox({ auth, onAlbumSelect }: SearchProps) {
             setInput(query);
           }}
           onFocus={async (e) => {
-            e.target.select();
             if (!input) return;
             if (searches[input]) {
               setFetchedResults({ albums: searches[input], query: input });
@@ -107,6 +106,7 @@ export default function SearchBox({ auth, onAlbumSelect }: SearchProps) {
               const albums = await search(auth, input);
               setFetchedResults({ albums, query: input });
             }
+            setTimeout(() => e.target.select(), 0);
           }}
           className={clsx(
             "w-full border-2 border-gray-100 bg-gray-100 rounded-lg px-4 py-2 text-gray-900/90",
@@ -137,7 +137,7 @@ export default function SearchBox({ auth, onAlbumSelect }: SearchProps) {
               album={album}
               isHighlighted={i === index}
               onClick={() => {
-                onAlbumSelect(album);
+                addAlbum(album);
                 resetSearch();
               }}
             />

@@ -21,7 +21,8 @@ import {
 import { CSS } from "@dnd-kit/utilities";
 
 import AlbumTile from "./AlbumTile";
-import { useAlbum } from "../hooks/useAlbumState";
+import { useAlbum } from "../state/albumState";
+
 interface GridProps {
   items: string[];
   onDragEnd: (event: DragEndEvent) => void;
