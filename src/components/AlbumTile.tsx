@@ -50,7 +50,7 @@ function CloseButton({
 >) {
   return (
     <button
-      className="invisible group-hover:visible absolute top-0 right-0 p-2 bg-black bg-opacity-30 rounded-bl-lg text-gray-200 hover:text-white focus:outline-none"
+      className="invisible group-hover:visible absolute top-0 right-0 p-2 bg-black/30 rounded-bl-lg text-gray-200 hover:text-white focus:outline-none"
       {...props}
     >
       <CloseIcon className="w-4 h-4 fill-current" />

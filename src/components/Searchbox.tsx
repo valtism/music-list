@@ -45,6 +45,11 @@ export default function SearchBox({ auth, onAlbumSelect }: SearchProps) {
           case "ArrowDown":
             e.preventDefault();
             return dispatch({ type: "arrowDown" });
+          case "Tab":
+            e.preventDefault();
+            return e.shiftKey
+              ? dispatch({ type: "arrowUp" })
+              : dispatch({ type: "arrowDown" });
           case "Enter":
             e.preventDefault();
             if (!albums[index]) return;
@@ -93,9 +98,9 @@ export default function SearchBox({ auth, onAlbumSelect }: SearchProps) {
             }
           }}
           className={clsx(
-            "w-full border-2 border-gray-100 bg-gray-100 rounded-lg px-4 py-2",
+            "w-full border-2 border-gray-100 bg-gray-100 rounded-lg px-4 py-2 text-gray-900/90",
             "hover:border-purple-100",
-            "focus:bg-white focus:border-purple-100 focus:outline-none",
+            "focus:bg-white focus:border-purple-100 focus:outline-none caret-purple-600/90",
             albums.length &&
               "rounded-b-none bg-white border-purple-100 outline-none"
           )}
@@ -104,8 +109,7 @@ export default function SearchBox({ auth, onAlbumSelect }: SearchProps) {
           <SearchIcon
             className={clsx(
               "w-4 h-4 fill-current text-gray-400",
-              "group-hover:text-purple-500 group-hover:text-opacity-80",
-              "group-focus-within:text-purple-500 group-focus-within:text-opacity-80"
+              "group-hover:text-purple-500/80 group-focus-within:text-purple-500/80"
             )}
           />
         </div>
@@ -147,8 +151,8 @@ function SearchItem({ album, isHighlighted, ...props }: SearhItemProps) {
     <li key={album.id}>
       <button
         className={clsx(
-          "group relative w-full flex items-center justify-between px-2 py-1.5 hover:bg-purple-100 overflow-hidden",
-          "focus:outline-none",
+          "group relative w-full flex items-center justify-between px-2 py-1.5",
+          "hover:bg-purple-100 overflow-hidden focus:outline-none",
           isHighlighted && "bg-purple-100"
         )}
         {...props}
@@ -161,18 +165,18 @@ function SearchItem({ album, isHighlighted, ...props }: SearhItemProps) {
             </div>
             <div
               title={album.artists[0].name}
-              className="whitespace-nowrap text-gray-900 text-opacity-60"
+              className="whitespace-nowrap text-gray-900/60"
             >
               {album.artists[0].name}
             </div>
           </div>
-          <div className="absolute h-full w-4 right-0 bg-gradient-to-l from-white group-hover:from-purple-100" />
+          <div className="hidden md:block absolute h-full w-4 right-0 bg-gradient-to-l from-white group-hover:from-purple-100" />
         </div>
         {isHighlighted && (
-          <div className="absolute right-0 h-full flex items-center pointer-events-none">
+          <div className="hidden md:flex absolute right-0 h-full items-center pointer-events-none">
             <div className="w-10 h-full bg-gradient-to-l from-purple-100" />
             <div className="h-full bg-purple-100 flex items-center px-4">
-              <EnterIcon className="w-4 h-4 fill-current text-purple-600 text-opacity-60 flex-shrink-0" />
+              <EnterIcon className="w-4 h-4 fill-current text-purple-600/60 flex-shrink-0" />
             </div>
           </div>
         )}

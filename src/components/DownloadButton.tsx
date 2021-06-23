@@ -25,7 +25,7 @@ export default function DownloadButton({ exportRef }: DownloadButtonProps) {
           #FBCFE8 20px
         )`,
       }}
-      className="px-2 py-1 rounded font-work text-purple-900 text-opacity-80 text-lg"
+      className="px-2 py-1 rounded font-work text-purple-900/80 text-lg hover:shadow-md active:shadow-inner focus:outline-none focus:ring ring-purple-400"
     >
       Download
     </button>

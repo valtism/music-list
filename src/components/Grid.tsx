@@ -19,9 +19,9 @@ import {
   useSortable,
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import AlbumTile from "./AlbumTile";
-import { useAlbumStore } from "../hooks/useAlbumStore";
 
+import AlbumTile from "./AlbumTile";
+import { useAlbum } from "../hooks/useAlbumState";
 interface GridProps {
   items: string[];
   onDragEnd: (event: DragEndEvent) => void;
@@ -45,7 +45,8 @@ export default function Grid({ items, onDragEnd, children }: GridProps) {
       coordinateGetter: sortableKeyboardCoordinates,
     })
   );
-  const album = useAlbumStore((state) => state.entities[activeId || ""]);
+
+  const album = useAlbum(activeId);
 
   return (
     <DndContext
