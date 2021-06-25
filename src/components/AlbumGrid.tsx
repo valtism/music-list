@@ -32,7 +32,7 @@ export default function AlbumGrid({ exportRef }: AlbumGridProps) {
           }}
         >
           <ul
-            className="grid grid-cols-3 grid-rows-3"
+            className="grid grid-cols-3 grid-rows-3 bg-purple-50 dark:bg-gray-900"
             style={{
               lineHeight: 0,
               width: "90vw",
@@ -69,8 +69,8 @@ function GridItem({ id }: GridItemProps) {
       {album ? (
         <AlbumTile album={album} onCloseClick={() => removeAlbum(id)} />
       ) : (
-        <div className="group flex flex-1 flex-shrink-0 bg-gray-50 p-2">
-          <div className="flex-1 rounded-lg border-2 border-dashed border-purple-600/50 group-hover:border-purple-600/90"></div>
+        <div className="group flex flex-1 p-2 bg-purple-50 dark:bg-gray-900">
+          <div className="flex-1 rounded-lg border-2 border-dashed border-purple-600/50 group-hover:border-purple-600/90 dark:border-purple-400/60 dark:group-hover:border-purple-400/90"></div>
         </div>
       )}
     </SortableItem>

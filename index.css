@@ -2,7 +2,12 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Tailwind reset misses non-nested li, which we need for the drag preview */
-li {
-  list-style-type: none;
+html {
+  /* bg-purple-50 */
+  background-color: #F5F3FF;
+}
+
+html.dark {
+  /* bg-gray-900 */
+  background-color: #111827;
 }

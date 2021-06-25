@@ -17,7 +17,7 @@ export default function AlbumTile({
   return (
     <div
       className={clsx(
-        "group overflow-hidden",
+        "group overflow-hidden bg-purple-50 dark:bg-gray-900",
         className
       )}
     >
