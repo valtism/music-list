@@ -1,40 +1,85 @@
 import { atom } from "jotai";
-import { AlbumObject } from "spotify-api-types";
 
-interface Searches {
-  [key: string]: AlbumObject[];
-}
+import { debounce } from "../util/debounce";
+import { addAlbumAtom } from "./albumState";
+import { authAtom } from "./appState";
+import { Auth, search } from "../api";
 
 export const inputAtom = atom("");
 export const indexAtom = atom(0);
-export const resultsAtom = atom<AlbumObject[]>([]);
-export const searchesAtom = atom<Searches>({});
 
-export const updateInputAtom = atom(null, (get, set, input: string) => {
-  set(inputAtom, input);
-  set(indexAtom, 0);
-  const searches = get(searchesAtom);
-  if (searches[input]) {
-    set(resultsAtom, searches[input]);
-  }
+export const searchAtom = atom(async (get) => {
+  const input = get(inputAtom);
+  const auth = get(authAtom);
+  if (!input) return;
+  return debouncedFetch(auth, input);
 });
 
-interface SetAlbumsProps {
-  albums: AlbumObject[];
-  query: string;
-}
+const debouncedFetch = debounce(async (auth: Auth, query: string) => {
+  return await search(auth, query);
+}, 300);
 
-export const setFetchedResultsAtom = atom(
+export const onClickOutsideAtom = atom(null, (_, set) => {
+  set(inputAtom, "");
+  set(indexAtom, 0);
+});
+
+export const onInputChangeAtom = atom(
   null,
-  (get, set, { albums, query }: SetAlbumsProps) => {
-    const searches = get(searchesAtom);
-    const input = get(inputAtom);
-    set(resultsAtom, searches[input] || albums);
-    set(searchesAtom, { ...searches, [query]: albums });
+  (_, set, event: React.ChangeEvent<HTMLInputElement>) => {
+    set(inputAtom, event.target.value);
+    set(indexAtom, 0);
   }
 );
 
-export const resetSearchAtom = atom(null, (get, set) => {
-  set(inputAtom, "");
-  set(resultsAtom, []);
-});
+export const onKeyDownAtom = atom(
+  null,
+  async (get, set, event: React.KeyboardEvent<HTMLDivElement>) => {
+    const input = get(inputAtom);
+    const index = get(indexAtom);
+    const results = await get(searchAtom, true);
+
+    const incrementIndex = () => {
+      if (!results) return;
+      set(indexAtom, index >= results.length - 1 ? 0 : index + 1);
+    };
+
+    const decrementIndex = () => {
+      if (!results) return;
+      set(indexAtom, index <= 0 ? results.length - 1 : index - 1);
+    };
+
+    const resetInput = () => {
+      set(inputAtom, "");
+      set(indexAtom, 0);
+    };
+
+    switch (event.key) {
+      case "ArrowUp":
+        event.preventDefault();
+        decrementIndex();
+        break;
+      case "ArrowDown":
+        event.preventDefault();
+        incrementIndex();
+        break;
+      case "Tab":
+        if (!input) return;
+        event.preventDefault();
+        event.shiftKey ? decrementIndex() : incrementIndex();
+        break;
+      case "Enter":
+        event.preventDefault();
+        if (!results) return;
+        set(addAlbumAtom, results[index]);
+        resetInput();
+        break;
+      case "Escape":
+        event.preventDefault();
+        resetInput();
+        break;
+      default:
+        break;
+    }
+  }
+);

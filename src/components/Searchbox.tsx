@@ -1,154 +1,127 @@
-import React, { useMemo, useRef } from "react";
+import React, { forwardRef, Suspense, useRef } from "react";
 import clsx from "clsx";
-import debounce from "lodash.debounce";
 import { AlbumObject } from "spotify-api-types";
-import { useAtom } from "jotai";
 import { useAtomValue, useUpdateAtom } from "jotai/utils";
 
-import { search } from "../api";
 import useOnClickOutside from "../hooks/useClickOutside";
-import { authAtom } from "../state/appState";
 import { addAlbumAtom } from "../state/albumState";
 import {
-  resultsAtom,
   indexAtom,
   inputAtom,
-  searchesAtom,
-  setFetchedResultsAtom,
-  updateInputAtom,
-  resetSearchAtom,
+  searchAtom,
+  onClickOutsideAtom,
+  onInputChangeAtom,
+  onKeyDownAtom,
 } from "../state/searchboxState";
 
 import { ReactComponent as EnterIcon } from "../images/enter.svg";
 import { ReactComponent as SearchIcon } from "../images/search.svg";
 
 export default function SearchBox() {
-  const auth = useAtomValue(authAtom);
-  const input = useAtomValue(inputAtom);
-  const [index, setIndex] = useAtom(indexAtom);
-  const [results, setResults] = useAtom(resultsAtom);
-  const searches = useAtomValue(searchesAtom);
-  const addAlbum = useUpdateAtom(addAlbumAtom);
-
-  const setInput = useUpdateAtom(updateInputAtom);
-  const setFetchedResults = useUpdateAtom(setFetchedResultsAtom);
-  const resetSearch = useUpdateAtom(resetSearchAtom);
-
-  const debouncedSearch = useMemo(
-    () =>
-      debounce(async (query: string) => {
-        const albums = await search(auth, query);
-        setFetchedResults({ albums, query });
-      }, 300),
-    [auth, setFetchedResults]
-  );
+  const onKeyDown = useUpdateAtom(onKeyDownAtom);
+  const onClickOutside = useUpdateAtom(onClickOutsideAtom);
 
   const inputRef = useRef<HTMLInputElement>(null);
-  const searchResultsRef = useOnClickOutside<HTMLUListElement>(
-    () => setResults([]),
+  const resultsRef = useOnClickOutside<HTMLUListElement>(
+    onClickOutside,
     inputRef
   );
 
-  const previousIndex = index <= 0 ? results.length - 1 : index - 1;
-  const nextIndex = index >= results.length - 1 ? 0 : index + 1;
-
   return (
-    <div
-      className="w-full max-w-sm"
-      onKeyDown={(e) => {
-        switch (e.key) {
-          case "ArrowUp":
-            e.preventDefault();
-            setIndex(previousIndex);
-            break;
-          case "ArrowDown":
-            e.preventDefault();
-            setIndex(nextIndex);
-            break;
-          case "Tab":
-            if (!results.length) return true
-            e.preventDefault();
-            setIndex(e.shiftKey ? previousIndex : nextIndex);
-            break;
-          case "Enter":
-            e.preventDefault();
-            if (!results[index]) return;
-            addAlbum(results[index]);
-            resetSearch();
-            break;
-          case "Escape":
-            e.preventDefault();
-            resetSearch();
-            break;
-          default:
-            break;
+    <div className="w-full max-w-sm" onKeyDown={onKeyDown}>
+      <SearchInput inputRef={inputRef} />
+      <Suspense
+        fallback={
+          <ResultsListBox>
+            <li className="h-10" />
+          </ResultsListBox>
         }
-      }}
-    >
-      <div className="relative group">
-        <input
-          ref={inputRef}
-          autoCorrect="off"
-          placeholder="Search"
-          value={input}
-          onChange={(e) => {
-            const query = e.target.value;
-            if (!searches[query]) {
-              debouncedSearch(query);
-            }
-            setInput(query);
-          }}
-          onFocus={async (e) => {
-            if (!input) return;
-            if (searches[input]) {
-              setFetchedResults({ albums: searches[input], query: input });
-            } else {
-              const albums = await search(auth, input);
-              setFetchedResults({ albums, query: input });
-            }
-            setTimeout(() => e.target.select(), 0);
-          }}
-          className={clsx(
-            "w-full border-2 border-gray-100 bg-gray-100 rounded-lg px-4 py-2 text-gray-900/90",
-            "hover:border-purple-100",
-            "focus:bg-white focus:border-purple-100 focus:outline-none caret-purple-600/90",
-            results.length &&
-              "rounded-b-none bg-white border-purple-100 outline-none"
-          )}
-        />
-        <div className="absolute inset-y-0 right-0 flex items-center pr-4 pointer-events-none">
-          <SearchIcon
-            className={clsx(
-              "w-4 h-4 fill-current text-gray-400",
-              "group-hover:text-purple-500/80 group-focus-within:text-purple-500/80"
-            )}
-          />
-        </div>
-      </div>
-
-      {!!results.length && (
-        <ul
-          ref={searchResultsRef}
-          className="absolute z-10 w-[calc(100%-32px)] max-w-sm bg-white shadow-xl overflow-auto rounded-b-lg border-2 border-t-0 border-purple-100 divide-y-2 divide-purple-100"
-        >
-          {results.map((album, i) => (
-            <SearchItem
-              key={album.id}
-              album={album}
-              isHighlighted={i === index}
-              onClick={() => {
-                addAlbum(album);
-                resetSearch();
-              }}
-            />
-          ))}
-        </ul>
-      )}
+      >
+        <ResultsList resultsRef={resultsRef} />
+      </Suspense>
     </div>
   );
 }
 
-interface SearhItemProps
+interface SearchInputProps {
+  inputRef: React.RefObject<HTMLInputElement>;
+}
+function SearchInput({ inputRef }: SearchInputProps) {
+  const input = useAtomValue(inputAtom);
+  const onInputChange = useUpdateAtom(onInputChangeAtom);
+
+  return (
+    <div className="relative group">
+      <input
+        ref={inputRef}
+        autoCorrect="off"
+        spellCheck="false"
+        placeholder="Search"
+        value={input}
+        onChange={onInputChange}
+        className={clsx(
+          "w-full border-2 border-gray-100 bg-gray-100 rounded-lg px-4 py-2 text-gray-900/90",
+          "hover:border-purple-100",
+          "focus:bg-white focus:border-purple-100 focus:outline-none caret-purple-600/90",
+          !!input && "rounded-b-none bg-white border-purple-100 outline-none"
+        )}
+      />
+      <div className="absolute inset-y-0 right-0 flex items-center pr-4 pointer-events-none">
+        <SearchIcon
+          className={clsx(
+            "w-4 h-4 fill-current text-gray-400",
+            "group-hover:text-purple-500/80 group-focus-within:text-purple-500/80"
+          )}
+        />
+      </div>
+    </div>
+  );
+}
+
+interface ResultsListProps {
+  resultsRef: React.RefObject<HTMLUListElement>;
+}
+
+function ResultsList({ resultsRef }: ResultsListProps) {
+  const index = useAtomValue(indexAtom);
+  const results = useAtomValue(searchAtom);
+  const addAlbum = useUpdateAtom(addAlbumAtom);
+
+  if (!results?.length) return null;
+
+  return (
+    <ResultsListBox ref={resultsRef}>
+      {results.map((album, i) => (
+        <Result
+          key={album.id}
+          isHighlighted={i === index}
+          album={album}
+          onClick={() => addAlbum(album)}
+        />
+      ))}
+    </ResultsListBox>
+  );
+}
+
+interface ResultsListBoxProps {
+  children: React.ReactNode;
+}
+export const ResultsListBox = React.forwardRef<
+  HTMLUListElement,
+  ResultsListBoxProps
+>(function myFunc(props, ref) {
+  return (
+    <ul
+      ref={ref}
+      className="absolute z-10 w-[calc(100%-32px)] max-w-sm bg-white shadow-xl overflow-auto rounded-b-lg border-2 border-t-0 border-purple-100 divide-y-2 divide-purple-100"
+    >
+      {/* eslint-disable-next-line react/prop-types */}
+      {props.children}
+    </ul>
+  );
+});
+
+interface ResultProps
   extends React.DetailedHTMLProps<
     React.ButtonHTMLAttributes<HTMLButtonElement>,
     HTMLButtonElement
@@ -157,13 +130,13 @@ interface SearhItemProps
   isHighlighted: boolean;
 }
 
-function SearchItem({ album, isHighlighted, ...props }: SearhItemProps) {
+function Result({ album, isHighlighted, ...props }: ResultProps) {
   return (
     <li key={album.id}>
       <button
         className={clsx(
           "group relative w-full flex items-center justify-between px-2 py-1.5",
-          "hover:bg-purple-100 overflow-hidden focus:outline-none",
+          "hover:bg-purple-100 overflow-hidden",
           isHighlighted && "bg-purple-100"
         )}
         {...props}
