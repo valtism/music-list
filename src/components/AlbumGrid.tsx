@@ -62,7 +62,7 @@ function GridItem({ id }: GridItemProps) {
     <SortableItem
       key={id}
       id={id}
-      className="inline-flex w-1/3 h-1/3 overflow-hidden cursor-default focus:outline-none focus:ring-4 focus:relative ring-purple-300"
+      className="inline-flex w-1/3 h-1/3 overflow-hidden cursor-default focus:outline-none focus:ring-4 focus:relative focus:z-10 ring-purple-300"
       dragClassNames="opacity-30 focus:ring-0"
     >
       {album ? (
