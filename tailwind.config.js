@@ -14,7 +14,7 @@ module.exports = {
       },
       keyframes: {
         stripes: {
-          "100%": { backgroundPosition: "241px 0" },
+          "100%": { backgroundPosition: "200px 0" },
         },
       },
     },
