@@ -64,11 +64,11 @@ export default function Grid({ items, onDragEnd, children }: GridProps) {
         {children}
       </SortableContext>
       {createPortal(
-        <DragOverlay adjustScale={true} zIndex={2}>
+        <DragOverlay adjustScale={true} zIndex={10}>
           {album && (
             <AlbumTile
               album={album}
-              className="shadow-xl ring-4 ring-purple-400"
+              className="shadow-xl ring-4 ring-purple-400 opacity-100"
             />
           )}
         </DragOverlay>,
