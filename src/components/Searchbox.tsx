@@ -16,6 +16,7 @@ import {
 
 import { ReactComponent as EnterIcon } from "../images/enter.svg";
 import { ReactComponent as SearchIcon } from "../images/search.svg";
+import { ReactComponent as SpinnerIcon } from "../images/spinner.svg";
 
 export default function SearchBox() {
   const onKeyDown = useUpdateAtom(onKeyDownAtom);
@@ -33,7 +34,9 @@ export default function SearchBox() {
       <Suspense
         fallback={
           <ResultsListBox>
-            <li className="h-10" />
+            <li className="flex items-center justify-center h-12">
+              <SpinnerIcon className="animate-spin h-5 w-5 text-gray-500" />
+            </li>
           </ResultsListBox>
         }
       >
