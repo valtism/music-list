@@ -4,6 +4,7 @@ import { debounce } from "../util/debounce";
 import { addAlbumAtom } from "./albumState";
 import { authAtom } from "./appState";
 import { Auth, search } from "../api";
+import { AlbumObject } from "spotify-api-types";
 
 export const inputAtom = atom("");
 export const indexAtom = atom(0);
@@ -35,7 +36,6 @@ export const onInputChangeAtom = atom(
 export const onKeyDownAtom = atom(
   null,
   async (get, set, event: React.KeyboardEvent<HTMLDivElement>) => {
-    const input = get(inputAtom);
     const index = get(indexAtom);
     const results = await get(searchAtom, true);
 
@@ -63,11 +63,6 @@ export const onKeyDownAtom = atom(
         event.preventDefault();
         incrementIndex();
         break;
-      case "Tab":
-        if (!input) return;
-        event.preventDefault();
-        event.shiftKey ? decrementIndex() : incrementIndex();
-        break;
       case "Enter":
         event.preventDefault();
         if (!results) return;
@@ -83,3 +78,9 @@ export const onKeyDownAtom = atom(
     }
   }
 );
+
+export const onResultClickAtom = atom(null, (_, set, album: AlbumObject) => {
+  set(addAlbumAtom, album);
+  set(inputAtom, "");
+  set(indexAtom, 0);
+});

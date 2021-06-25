@@ -4,7 +4,6 @@ import { AlbumObject } from "spotify-api-types";
 import { useAtomValue, useUpdateAtom } from "jotai/utils";
 
 import useOnClickOutside from "../hooks/useClickOutside";
-import { addAlbumAtom } from "../state/albumState";
 import {
   indexAtom,
   inputAtom,
@@ -12,6 +11,7 @@ import {
   onClickOutsideAtom,
   onInputChangeAtom,
   onKeyDownAtom,
+  onResultClickAtom,
 } from "../state/searchboxState";
 
 import { ReactComponent as EnterIcon } from "../images/enter.svg";
@@ -85,7 +85,7 @@ interface ResultsListProps {
 function ResultsList({ resultsRef }: ResultsListProps) {
   const index = useAtomValue(indexAtom);
   const results = useAtomValue(searchAtom);
-  const addAlbum = useUpdateAtom(addAlbumAtom);
+  const onResultClick = useUpdateAtom(onResultClickAtom);
 
   if (!results?.length) return null;
 
@@ -96,7 +96,7 @@ function ResultsList({ resultsRef }: ResultsListProps) {
           key={album.id}
           isHighlighted={i === index}
           album={album}
-          onClick={() => addAlbum(album)}
+          onClick={() => onResultClick(album)}
         />
       ))}
     </ResultsListBox>
@@ -106,20 +106,19 @@ function ResultsList({ resultsRef }: ResultsListProps) {
 interface ResultsListBoxProps {
   children: React.ReactNode;
 }
-export const ResultsListBox = React.forwardRef<
-  HTMLUListElement,
-  ResultsListBoxProps
->(function myFunc(props, ref) {
-  return (
-    <ul
-      ref={ref}
-      className="absolute z-10 w-[calc(100%-32px)] max-w-sm bg-white shadow-xl overflow-auto rounded-b-lg border-2 border-t-0 border-purple-100 divide-y-2 divide-purple-100"
-    >
-      {/* eslint-disable-next-line react/prop-types */}
-      {props.children}
-    </ul>
-  );
-});
+export const ResultsListBox = forwardRef<HTMLUListElement, ResultsListBoxProps>(
+  function myFunc(props, ref) {
+    return (
+      <ul
+        ref={ref}
+        className="absolute z-10 w-[calc(100%-32px)] max-w-sm bg-white shadow-xl overflow-auto rounded-b-lg border-2 border-t-0 border-purple-100 divide-y-2 divide-purple-100"
+      >
+        {/* eslint-disable-next-line react/prop-types */}
+        {props.children}
+      </ul>
+    );
+  }
+);
 
 interface ResultProps
   extends React.DetailedHTMLProps<

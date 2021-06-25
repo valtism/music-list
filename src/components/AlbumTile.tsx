@@ -21,7 +21,7 @@ export default function AlbumTile({
         className
       )}
     >
-      <div className="relative flex flex-col">
+      <div className="relative">
         {onCloseClick && (
           <CloseButton
             onClick={(e) => {
@@ -33,7 +33,6 @@ export default function AlbumTile({
         <img
           src={album.images[0].url}
           onDragStart={(e) => e.preventDefault()}
-          className="self-center"
         />
       </div>
 
