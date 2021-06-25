@@ -32,6 +32,7 @@ export default function AlbumGrid({ exportRef }: AlbumGridProps) {
           }}
         >
           <ul
+            className="grid grid-cols-3 grid-rows-3"
             style={{
               lineHeight: 0,
               width: "90vw",
@@ -62,14 +63,14 @@ function GridItem({ id }: GridItemProps) {
     <SortableItem
       key={id}
       id={id}
-      className="inline-flex w-1/3 h-1/3 overflow-hidden cursor-default focus:outline-none focus:ring-4 focus:relative focus:z-10 ring-purple-300"
+      className="inline-flex overflow-hidden cursor-default focus:outline-none focus:ring-4 focus:relative focus:z-10 ring-purple-300"
       dragClassNames="opacity-30 focus:ring-0"
     >
       {album ? (
         <AlbumTile album={album} onCloseClick={() => removeAlbum(id)} />
       ) : (
-        <div className="flex flex-1 bg-gray-200">
-          {/* <div className="flex-1 bg-gray-400 rounded"></div> */}
+        <div className="group flex flex-1 flex-shrink-0 bg-gray-50 p-2">
+          <div className="flex-1 rounded-lg border-2 border-dashed border-purple-600/50 group-hover:border-purple-600/90"></div>
         </div>
       )}
     </SortableItem>
