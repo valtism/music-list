@@ -5,13 +5,14 @@ import switchOnSrc from "../audio/switch-on.mp3";
 import switchOffSrc from "../audio/switch-off.mp3";
 import { initIosAudio } from "../util/initIosAudio";
 
-const switchOn = new Audio(switchOnSrc);
-const switchOff = new Audio(switchOffSrc);
 initIosAudio();
 
 export default function DarkModeToggle() {
   const [darkMode, setDarkMode] = useDarkMode();
 
+  const switchOn = new Audio(switchOnSrc);
+  const switchOff = new Audio(switchOffSrc);
+  
   return (
     <button
       onClick={() => {
