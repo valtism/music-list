@@ -67,7 +67,7 @@ function SearchInput({ inputRef }: SearchInputProps) {
           "bg-purple-100 text-gray-900/90 border-purple-100 caret-purple-600/90",
           "dark:bg-gray-700 dark:text-white dark:border-gray-700 dark:caret-purple-200/90",
           "hover:border-purple-200 focus:border-purple-200 focus:bg-white",
-          "dark:hover:border-gray-500 dark:focus:border-gray-400 dark:focus:bg-gray-900",
+          "dark:hover:border-gray-500 dark:focus:border-gray-400/30 dark:focus:bg-gray-900",
           !!input && "rounded-b-none bg-white border-purple-100 outline-none"
         )}
       />
@@ -121,7 +121,7 @@ export const ResultsListBox = forwardRef<HTMLUListElement, ResultsListBoxProps>(
           "absolute z-10 w-[calc(100%-32px)] max-w-sm shadow-xl overflow-auto",
           "rounded-b-lg border-2 border-t-0 divide-y-2",
           "bg-white text-gray-900 border-purple-200 divide-purple-200",
-          "dark:bg-gray-900 dark:text-white dark:border-gray-400 dark:divide-gray-400"
+          "dark:bg-gray-900 dark:text-white dark:border-gray-400/30 dark:divide-gray-400/30"
         )}
       >
         {/* eslint-disable-next-line react/prop-types */}
