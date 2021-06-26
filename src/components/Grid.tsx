@@ -19,6 +19,7 @@ import {
   useSortable,
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
+import { restrictToWindowEdges } from "@dnd-kit/modifiers";
 
 import AlbumTile from "./AlbumTile";
 import { useAlbum } from "../state/albumState";
@@ -53,6 +54,7 @@ export default function Grid({ items, onDragEnd, children }: GridProps) {
     <DndContext
       sensors={sensors}
       collisionDetection={closestCenter}
+      modifiers={[restrictToWindowEdges]}
       onDragStart={(event) => setActiveId(event.active.id)}
       onDragEnd={(event) => {
         onDragEnd(event);
