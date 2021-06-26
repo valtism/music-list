@@ -33,6 +33,11 @@ export const onInputChangeAtom = atom(
   }
 );
 
+export const onClearButtonClickAtom = atom(null, (get, set) => {
+  set(inputAtom, "");
+  set(indexAtom, 0);
+});
+
 export const onKeyDownAtom = atom(
   null,
   async (get, set, event: React.KeyboardEvent<HTMLDivElement>) => {

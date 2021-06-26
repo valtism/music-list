@@ -12,10 +12,12 @@ import {
   onInputChangeAtom,
   onKeyDownAtom,
   onResultClickAtom,
+  onClearButtonClickAtom,
 } from "../state/searchboxState";
 
 import { ReactComponent as EnterIcon } from "../images/enter.svg";
 import { ReactComponent as SearchIcon } from "../images/search.svg";
+import { ReactComponent as CloseIcon } from "../images/close.svg";
 import { ReactComponent as SpinnerIcon } from "../images/spinner.svg";
 
 export default function SearchBox() {
@@ -52,6 +54,7 @@ interface SearchInputProps {
 function SearchInput({ inputRef }: SearchInputProps) {
   const input = useAtomValue(inputAtom);
   const onInputChange = useUpdateAtom(onInputChangeAtom);
+  const onClearButtonClick = useUpdateAtom(onClearButtonClickAtom);
 
   return (
     <div className="relative group">
@@ -64,22 +67,34 @@ function SearchInput({ inputRef }: SearchInputProps) {
         onChange={onInputChange}
         className={clsx(
           "w-full border-2 rounded-lg px-4 py-2 focus:outline-none",
-          "bg-purple-100 text-gray-900/90 border-purple-100 caret-purple-600/90",
-          "dark:bg-gray-700 dark:text-white dark:border-gray-700 dark:caret-purple-200/90",
+          "bg-purple-100 text-gray-900/90 placeholder-purple-900/50 border-purple-100 caret-purple-600/90",
+          "dark:bg-gray-700 dark:text-gray-50 dark:placeholder-purple-200/70 dark:border-gray-700 dark:caret-purple-200/90",
           "hover:border-purple-200 focus:border-purple-200 focus:bg-white",
           "dark:hover:border-gray-500 dark:focus:border-gray-400/30 dark:focus:bg-gray-900",
           !!input && "rounded-b-none bg-white border-purple-100 outline-none"
         )}
       />
-      <div className="absolute inset-y-0 right-0 flex items-center pr-4 pointer-events-none">
-        <SearchIcon
-          className={clsx(
-            "w-4 h-4 fill-current",
-            "text-gray-400 group-hover:text-purple-500/80 group-focus-within:text-purple-500/80",
-            "dark:text-gray-500 group-hover:text-purple-400 group-focus-within:text-purple-400"
-          )}
-        />
-      </div>
+
+      {input ? (
+        <div className="absolute inset-y-0 right-0 rounded-r-lg overflow-hidden py-[2px]">
+          <button
+            onClick={onClearButtonClick}
+            className="group h-full w-10 flex items-center justify-center text-purple-600/60 hover:text-purple-600 dark:text-gray-400 dark:hover:text-gray-100"
+          >
+            <CloseIcon className="w-4 h-4 fill-current" />
+          </button>
+        </div>
+      ) : (
+        <div className="absolute inset-y-0 right-0 flex items-center pointer-events-none">
+          <SearchIcon
+            className={clsx(
+              "w-4 h-4 fill-current mr-4",
+              "text-gray-400 group-hover:text-purple-500/80 group-focus-within:text-purple-500/80",
+              "dark:text-gray-500 group-hover:text-purple-400 group-focus-within:text-purple-400"
+            )}
+          />
+        </div>
+      )}
     </div>
   );
 }
@@ -142,7 +157,7 @@ interface ResultProps
 
 function Result({ album, isHighlighted, ...props }: ResultProps) {
   return (
-    <li key={album.id}>
+    <li>
       <button
         className={clsx(
           "group relative w-full flex items-center justify-between px-2 py-1.5",
@@ -159,7 +174,7 @@ function Result({ album, isHighlighted, ...props }: ResultProps) {
             </div>
             <div
               title={album.artists[0].name}
-              className="whitespace-nowrap text-gray-900/60 dark:text-white/60"
+              className="whitespace-nowrap text-gray-900/60 dark:text-purple-200/80"
             >
               {album.artists[0].name}
             </div>
