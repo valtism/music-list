@@ -1,8 +1,7 @@
 import React from "react";
 import clsx from "clsx";
-// import { toCanvas, toJpeg } from "html-to-image";
 import { download } from "../util/download";
-import html2canvas from "html2canvas";
+import { getCanvas } from "../util/getCanvas";
 
 interface DownloadButtonProps {
   exportRef: React.RefObject<HTMLElement>;
@@ -13,23 +12,7 @@ export default function DownloadButton({ exportRef }: DownloadButtonProps) {
     <button
       onClick={async () => {
         if (!exportRef.current) return;
-
-        /**
-         * Exporting with html2canvas will put white bars around the image if there
-         * is any scroll on the document. We scroll to 0,0 to avoid vertical bars,
-         * and set the html overflow to "hidden" because a scrollbar will produce
-         * a vertical bar on the left.
-         */
-        const scrollX = window.scrollX;
-        const scrollY = window.scrollY;
-        window.scrollTo(0, 0);
-        document.documentElement.style.overflow = "hidden";
-        const canvas = await html2canvas(exportRef.current, {
-          scale: 3,
-          useCORS: true,
-        });
-        window.scrollTo(scrollX, scrollY);
-        document.documentElement.style.overflow = "";
+        const canvas = await getCanvas(exportRef.current)
         download(canvas.toDataURL("image/jpeg;base64;"), "chart.jpg");
       }}
       className={clsx(
