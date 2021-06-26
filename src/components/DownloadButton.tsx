@@ -13,17 +13,24 @@ export default function DownloadButton({ exportRef }: DownloadButtonProps) {
     <button
       onClick={async () => {
         if (!exportRef.current) return;
+
+        /**
+         * Exporting with html2canvas will put white bars around the image if there
+         * is any scroll on the document. We scroll to 0,0 to avoid vertical bars,
+         * and set the html overflow to "hidden" because a scrollbar will produce
+         * a vertical bar on the left.
+         */
+        const scrollX = window.scrollX;
+        const scrollY = window.scrollY;
         window.scrollTo(0, 0);
-        // const canvas = await toCanvas(exportRef.current, {
-        //   canvasHeight: 640 * 3,
-        //   canvasWidth: 640 * 3,
-        // });
+        document.documentElement.style.overflow = "hidden";
         const canvas = await html2canvas(exportRef.current, {
+          scale: 3,
           useCORS: true,
         });
+        window.scrollTo(scrollX, scrollY);
+        document.documentElement.style.overflow = "";
         download(canvas.toDataURL("image/jpeg;base64;"), "chart.jpg");
-        const ctx = canvas.getContext("2d");
-        ctx?.clearRect(0, 0, canvas.width, canvas.height);
       }}
       className={clsx(
         "px-2 py-1 rounded font-work text-lg focus:outline-none focus:ring",
