@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 
 import Grid, { SortableItem } from "./Grid";
 import AlbumTile from "./AlbumTile";
@@ -6,8 +6,8 @@ import { useAtomValue, useUpdateAtom } from "jotai/utils";
 import {
   gridIdsAtom,
   removeAlbumAtom,
-  sortAlbumsAtom,
-  useAlbum,
+  onDragEndAtom,
+  albumAtom,
 } from "../state/albumState";
 
 interface AlbumGridProps {
@@ -15,22 +15,12 @@ interface AlbumGridProps {
 }
 export default function AlbumGrid({ exportRef }: AlbumGridProps) {
   const ids = useAtomValue(gridIdsAtom);
-  const sortAlbums = useUpdateAtom(sortAlbumsAtom);
+  const onDragEnd = useUpdateAtom(onDragEndAtom);
 
   return (
     <div className="m-0">
       <div ref={exportRef}>
-        <Grid
-          items={ids}
-          onDragEnd={({ active, over }) => {
-            if (!over) return;
-            if (active.id === over.id) return;
-            sortAlbums({
-              from: active.id,
-              to: over.id,
-            });
-          }}
-        >
+        <Grid items={ids} onDragEnd={onDragEnd}>
           <ul
             className="grid grid-cols-3 grid-rows-3 bg-gray-50 dark:bg-gray-900"
             style={{
@@ -56,7 +46,7 @@ interface GridItemProps {
 }
 
 function GridItem({ id }: GridItemProps) {
-  const album = useAlbum(id);
+  const album = useAtomValue(useMemo(() => albumAtom(id), [id]));
   const removeAlbum = useUpdateAtom(removeAlbumAtom);
 
   return (

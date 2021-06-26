@@ -1,7 +1,6 @@
 import { AlbumObject } from "spotify-api-types";
 import { atom } from "jotai";
-import { useMemo } from "react";
-import { selectAtom, useAtomValue } from "jotai/utils";
+import { DragEndEvent } from "@dnd-kit/core";
 
 export const gridIdsAtom = atom(
   Array(9)
@@ -31,20 +30,17 @@ export const addAlbumAtom = atom(null, (get, set, album: AlbumObject) => {
   set(albumsAtom, { ...albums, [firstEmptyId]: album });
 });
 
-interface SortAlbumsProps {
-  from: string;
-  to: string;
-}
-
-export const sortAlbumsAtom = atom(
+export const onDragEndAtom = atom(
   null,
-  (get, set, { from, to }: SortAlbumsProps) => {
+  (get, set, { active, over }: DragEndEvent) => {
+    if (!over) return;
+    if (active.id === over.id) return;
     const gridIds = get(gridIdsAtom);
-    const fromIndex = gridIds.findIndex((id) => id === from);
-    const toIndex = gridIds.findIndex((id) => id === to);
+    const fromIndex = gridIds.findIndex((id) => id === active.id);
+    const toIndex = gridIds.findIndex((id) => id === over.id);
     const newIds = gridIds.slice();
-    newIds[fromIndex] = to;
-    newIds[toIndex] = from;
+    newIds[fromIndex] = over.id;
+    newIds[toIndex] = active.id;
     set(gridIdsAtom, newIds);
   }
 );
@@ -52,9 +48,3 @@ export const sortAlbumsAtom = atom(
 export const removeAlbumAtom = atom(null, (get, set, id: string) => {
   set(albumsAtom, { ...get(albumsAtom), [id]: null });
 });
-
-export function useAlbum(id: string | null) {
-  return useAtomValue(
-    useMemo(() => selectAtom(albumsAtom, (albums) => albums[id || ""]), [id])
-  );
-}

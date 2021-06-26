@@ -1,5 +1,6 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { createPortal } from "react-dom";
+import { useAtomValue } from "jotai/utils";
 import clsx from "clsx";
 import {
   closestCenter,
@@ -22,7 +23,7 @@ import { CSS } from "@dnd-kit/utilities";
 import { restrictToWindowEdges } from "@dnd-kit/modifiers";
 
 import AlbumTile from "./AlbumTile";
-import { useAlbum } from "../state/albumState";
+import { albumAtom } from "../state/albumState";
 
 interface GridProps {
   items: string[];
@@ -48,7 +49,7 @@ export default function Grid({ items, onDragEnd, children }: GridProps) {
     })
   );
 
-  const album = useAlbum(activeId);
+  const album = useAtomValue(useMemo(() => albumAtom(activeId), [activeId]));
 
   return (
     <DndContext
