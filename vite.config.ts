@@ -5,13 +5,6 @@ import eslintPlugin from "@nabla/vite-plugin-eslint";
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [
-    reactRefresh(),
-    svgr(),
-    eslintPlugin(),
-  ],
+  plugins: [reactRefresh(), svgr(), eslintPlugin()],
   base: "/music-list/",
-  build: {
-    sourcemap: true,
-  },
 });
