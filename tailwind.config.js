@@ -9,13 +9,29 @@ module.exports = {
         work: ["Work Sans", "sans-serif"],
       },
       animation: {
-        stripes: "stripes 10s linear infinite",
+        flow: "flow 10s linear infinite",
       },
       keyframes: {
-        stripes: {
+        flow: {
           "100%": { backgroundPosition: "200px 0" },
         },
       },
+      backgroundImage: (theme) => ({
+        "stripes-light": `repeating-linear-gradient(
+          -55deg,
+          ${theme("colors.pink.100")},
+          ${theme("colors.pink.100")} 10px,
+          ${theme("colors.pink.200")} 10px,
+          ${theme("colors.pink.200")} 20px
+        )`,
+        "stripes-dark": `repeating-linear-gradient(
+          -55deg,
+          ${theme("colors.purple.800")},
+          ${theme("colors.purple.800")} 10px,
+          ${theme("colors.purple.900")} 10px,
+          ${theme("colors.purple.900")} 20px
+        )`,
+      }),
     },
   },
   variants: {
