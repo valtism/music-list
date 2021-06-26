@@ -16,13 +16,13 @@ export default function App() {
 
   return (
     <div className="relative font-nunito flex flex-col space-y-10 items-center px-4 py-10 text-gray-900 selection:bg-pink-100 dark:selection:bg-pink-200/80 selection:text-purple-900">
-      <div className="absolute top-2 right-2">
-        <DarkModeToggle />
-      </div>
       <Title>Music List</Title>
       <Searchbox />
       <AlbumGrid exportRef={exportRef} />
       <DownloadButton exportRef={exportRef} />
+      <div className="absolute bottom-4 right-4">
+        <DarkModeToggle />
+      </div>
     </div>
   );
 }

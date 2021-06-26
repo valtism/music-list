@@ -22,7 +22,7 @@ export default function AlbumGrid({ exportRef }: AlbumGridProps) {
       <div ref={exportRef}>
         <Grid items={ids} onDragEnd={onDragEnd}>
           <ul
-            className="grid grid-cols-3 grid-rows-3 bg-gray-50 dark:bg-gray-900"
+            className="grid grid-cols-3 grid-rows-3 bg-gray-50 dark:bg-gray-900 select-none"
             style={{
               lineHeight: 0,
               width: "90vw",
@@ -53,7 +53,7 @@ function GridItem({ id }: GridItemProps) {
     <SortableItem
       key={id}
       id={id}
-      className="inline-flex overflow-hidden cursor-default focus:outline-none focus:ring-4 focus:relative focus:z-10 ring-purple-300"
+      className="inline-flex overflow-hidden cursor-default focus:outline-none md:focus:ring focus:relative focus:z-10 ring-purple-300 dark:ring-purple-500"
       dragClassNames="opacity-30 focus:ring-0"
     >
       {album ? (

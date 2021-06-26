@@ -7,4 +7,7 @@ import eslintPlugin from "@nabla/vite-plugin-eslint";
 export default defineConfig({
   plugins: [reactRefresh(), svgr(), eslintPlugin()],
   base: "/music-list/",
+  server: {
+    host: "0.0.0.0",
+  },
 });

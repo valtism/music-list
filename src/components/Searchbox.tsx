@@ -128,12 +128,12 @@ interface ResultsListBoxProps {
   children: React.ReactNode;
 }
 export const ResultsListBox = forwardRef<HTMLUListElement, ResultsListBoxProps>(
-  function myFunc(props, ref) {
+  function ResultsListBox(props, ref) {
     return (
       <ul
         ref={ref}
         className={clsx(
-          "absolute z-10 w-[calc(100%-32px)] max-w-sm shadow-xl overflow-auto",
+          "absolute z-20 w-[calc(100%-32px)] max-w-sm shadow-xl overflow-auto",
           "rounded-b-lg border-2 border-t-0 divide-y-2",
           "bg-white text-gray-900 border-purple-200 divide-purple-200",
           "dark:bg-gray-900 dark:text-white dark:border-gray-400/30 dark:divide-gray-400/30"

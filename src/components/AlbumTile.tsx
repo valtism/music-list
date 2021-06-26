@@ -17,7 +17,7 @@ export default function AlbumTile({
   return (
     <div
       className={clsx(
-        "group overflow-hidden bg-purple-50 dark:bg-gray-900",
+        "group overflow-hidden bg-purple-50 dark:bg-gray-900 select-none",
         className
       )}
     >
@@ -31,6 +31,7 @@ export default function AlbumTile({
           />
         )}
         <img
+          style={{ WebkitTouchCallout: "none" }}
           src={album.images[0].url}
           onDragStart={(e) => e.preventDefault()}
         />

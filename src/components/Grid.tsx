@@ -41,7 +41,8 @@ export default function Grid({ items, onDragEnd, children }: GridProps) {
     }),
     useSensor(TouchSensor, {
       activationConstraint: {
-        distance: 15,
+        delay: 100,
+        tolerance: 5,
       },
     }),
     useSensor(KeyboardSensor, {
@@ -71,7 +72,7 @@ export default function Grid({ items, onDragEnd, children }: GridProps) {
           {album && (
             <AlbumTile
               album={album}
-              className="shadow-xl ring-4 ring-purple-400 opacity-100"
+              className="shadow-xl ring-4 ring-purple-400 dark:ring-purple-400 opacity-100"
             />
           )}
         </DragOverlay>,
@@ -115,7 +116,7 @@ export function SortableItem({
     <li
       {...props}
       ref={setNodeRef}
-      style={{ touchAction: "none", ...style }}
+      style={{ ...style }}
       {...attributes}
       {...listeners}
       className={clsx(props.className, isDragging && dragClassNames)}

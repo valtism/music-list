@@ -1,13 +1,23 @@
 import clsx from "clsx";
 import React from "react";
 import { useDarkMode } from "../hooks/useDarkMode";
+import switchOnSrc from "../audio/switch-on.mp3";
+import switchOffSrc from "../audio/switch-off.mp3";
+import { initIosAudio } from "../util/initIosAudio";
+
+const switchOn = new Audio(switchOnSrc);
+const switchOff = new Audio(switchOffSrc);
+initIosAudio();
 
 export default function DarkModeToggle() {
   const [darkMode, setDarkMode] = useDarkMode();
 
   return (
     <button
-      onClick={() => setDarkMode(!darkMode)}
+      onClick={() => {
+        darkMode ? switchOn.play() : switchOff.play();
+        setDarkMode(!darkMode);
+      }}
       className={clsx(
         "group relative flex items-center justify-center w-12 h-6 rounded-full focus:outline-none",
         "bg-gray-500 dark:bg-gray-700"
