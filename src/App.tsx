@@ -16,7 +16,9 @@ export default function App() {
 
   return (
     <div className="relative font-nunito flex flex-col space-y-10 items-center px-4 py-10 text-gray-900 selection:bg-pink-100 selection:text-pink-900">
-      <DarkModeToggle />
+      <div className="absolute top-2 right-2">
+        <DarkModeToggle />
+      </div>
       <Title>Music List</Title>
       <Searchbox />
       <AlbumGrid exportRef={exportRef} />
