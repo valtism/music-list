@@ -19,7 +19,7 @@ export default function AlbumGrid({ exportRef }: AlbumGridProps) {
 
   return (
     <div className="m-0">
-      <div ref={exportRef} className="bg-white">
+      <div ref={exportRef}>
         <Grid
           items={ids}
           onDragEnd={({ active, over }) => {
