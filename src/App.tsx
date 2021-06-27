@@ -1,5 +1,6 @@
-import React, { useRef } from "react";
+import React from "react";
 
+import Layout from "./components/Layout";
 import Title from "./components/Title";
 import DarkModeToggle from "./components/DarkModeToggle";
 import Searchbox from "./components/Searchbox";
@@ -12,17 +13,16 @@ import { useDarkMode } from "./hooks/useDarkMode";
 export default function App() {
   useFetchAuth();
   useDarkMode();
-  const exportRef = useRef<HTMLDivElement>(null);
 
   return (
-    <div className="relative font-nunito flex flex-col space-y-10 items-center px-4 py-10 text-gray-900 selection:bg-pink-100 dark:selection:bg-pink-200/80 selection:text-purple-900">
+    <Layout>
       <Title>Music List</Title>
       <Searchbox />
-      <AlbumGrid exportRef={exportRef} />
-      <DownloadButton exportRef={exportRef} />
+      <AlbumGrid />
+      <DownloadButton />
       <div className="absolute bottom-4 right-4">
         <DarkModeToggle />
       </div>
-    </div>
+    </Layout>
   );
 }

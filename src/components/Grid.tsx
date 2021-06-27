@@ -72,7 +72,7 @@ export default function Grid({ items, onDragEnd, children }: GridProps) {
           {album && (
             <AlbumTile
               album={album}
-              className="shadow-xl ring-4 ring-purple-400 dark:ring-purple-400 opacity-100"
+              className="shadow-xl filter brightness-110"
             />
           )}
         </DragOverlay>,
