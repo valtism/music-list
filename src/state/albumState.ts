@@ -16,6 +16,11 @@ export const albumsAtom = atom<{ [key: string]: AlbumObject | null }>(
   )
 );
 
+export const gridAlbums = atom((get) => {
+  const albums = get(albumsAtom);
+  return get(gridIdsAtom).map((id) => albums[id]);
+});
+
 export const albumAtom = (id: string | null) => {
   return atom((get) => get(albumsAtom)[id || ""]);
 };

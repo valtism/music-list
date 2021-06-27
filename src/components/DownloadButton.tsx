@@ -1,19 +1,22 @@
 import React from "react";
 import clsx from "clsx";
+import { useAtomValue } from "jotai/utils";
+import { gridAlbums } from "../state/albumState";
 import { download } from "../util/download";
-import { getCanvas } from "../util/getCanvas";
 
 interface DownloadButtonProps {
   exportRef: React.RefObject<HTMLElement>;
 }
 
 export default function DownloadButton({ exportRef }: DownloadButtonProps) {
+  const albums = useAtomValue(gridAlbums);
+  const urls = albums.map((album) => album?.images[0].url);
+
   return (
     <button
       onClick={async () => {
         if (!exportRef.current) return;
-        const canvas = await getCanvas(exportRef.current);
-        download(canvas.toDataURL("image/jpeg;base64;"), "chart.jpg");
+        download(urls, 3, 3);
       }}
       className={clsx(
         "px-2 py-1 rounded font-work text-lg focus:outline-none focus:ring",

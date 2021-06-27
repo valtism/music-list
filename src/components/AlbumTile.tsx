@@ -32,7 +32,7 @@ export default function AlbumTile({
         )}
         <img
           style={{ WebkitTouchCallout: "none" }}
-          src={album.images[0].url}
+          src={album.images[1].url}
           onDragStart={(e) => e.preventDefault()}
         />
       </div>
