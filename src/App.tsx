@@ -2,10 +2,10 @@ import React from "react";
 
 import Layout from "./components/Layout";
 import Title from "./components/Title";
-import DarkModeToggle from "./components/DarkModeToggle";
 import Searchbox from "./components/Searchbox";
 import AlbumGrid from "./components/AlbumGrid";
 import DownloadButton from "./components/DownloadButton";
+import DarkModeToggle from "./components/DarkModeToggle";
 
 import { useFetchAuth } from "./hooks/useFetchAuth";
 import { useDarkMode } from "./hooks/useDarkMode";

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef } from "react";
 import clsx from "clsx";
 import { useAtomValue } from "jotai/utils";
 import { gridAlbums } from "../state/albumState";
@@ -7,10 +7,13 @@ import { download } from "../util/download";
 export default function DownloadButton() {
   const albums = useAtomValue(gridAlbums);
   const urls = albums.map((album) => album?.images[0].url);
+  const ref = useRef<HTMLAnchorElement>(null);
 
   return (
-    <button
-      onClick={async () => download(urls, 3, 3)}
+    <a
+      download
+      ref={ref}
+      onClick={async () => await download(ref, urls, 3, 3)}
       className={clsx(
         "px-2 py-1 rounded font-work text-lg focus:outline-none focus:ring",
         "hover:shadow-md active:shadow-inner",
@@ -19,6 +22,6 @@ export default function DownloadButton() {
       )}
     >
       Download
-    </button>
+    </a>
   );
 }

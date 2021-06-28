@@ -4,10 +4,12 @@ import { loadImage } from "./loadImage";
 const ImageSize = 640;
 
 export async function download(
+  ref: React.RefObject<HTMLAnchorElement>,
   imageUrls: (string | undefined)[],
   rows: number,
   columns: number
 ) {
+  if (!ref.current) return;
   const canvas = document.createElement("canvas");
   canvas.width = ImageSize * columns;
   canvas.height = ImageSize * rows;
@@ -27,8 +29,5 @@ export async function download(
     );
   });
 
-  const a = document.createElement("a");
-  a.href = canvas.toDataURL("image/png;base64;");
-  a.setAttribute("download", "chart");
-  a.click();
+  ref.current.href = canvas.toDataURL("image/png;base64;");
 }
