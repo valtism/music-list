@@ -3,13 +3,11 @@ import { loadImage } from "./loadImage";
 // This is the high res image size spotify provides
 const ImageSize = 640;
 
-export async function download(
-  ref: React.RefObject<HTMLAnchorElement>,
+export async function getImageDataUrl(
   imageUrls: (string | undefined)[],
   rows: number,
   columns: number
 ) {
-  if (!ref.current) return;
   const canvas = document.createElement("canvas");
   canvas.width = ImageSize * columns;
   canvas.height = ImageSize * rows;
@@ -29,5 +27,5 @@ export async function download(
     );
   });
 
-  ref.current.href = canvas.toDataURL("image/png;base64;");
+  return canvas.toDataURL("image/png;base64;");
 }
