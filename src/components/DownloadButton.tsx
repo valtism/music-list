@@ -23,7 +23,6 @@ export default function DownloadButton() {
         const a = document.createElement("a");
         a.href = dataUrl;
         a.setAttribute("download", "chart");
-        a.setAttribute("id", "asdasd");
         a.click();
         setLoading(false);
       }}
