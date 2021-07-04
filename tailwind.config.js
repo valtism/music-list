@@ -5,8 +5,8 @@ module.exports = {
   theme: {
     extend: {
       fontFamily: {
+        lora: ["Lora", "serif"],
         nunito: ["Nunito", "sans-serif"],
-        work: ["Work Sans", "sans-serif"],
       },
       animation: {
         flow: "flow 10s linear infinite",

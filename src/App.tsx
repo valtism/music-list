@@ -16,7 +16,7 @@ export default function App() {
 
   return (
     <Layout>
-      <Title>Music List</Title>
+      <Title>Album Charter</Title>
       <Searchbox />
       <AlbumGrid />
       <DownloadButton />
