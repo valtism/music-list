@@ -20,7 +20,7 @@ export default function DarkModeToggle() {
         setDarkMode(!darkMode);
       }}
       className={clsx(
-        "group relative flex items-center justify-center w-12 h-6 rounded-full focus:outline-none",
+        "group relative flex items-center justify-center w-12 h-6 rounded-full select-none focus:outline-none",
         "bg-gray-500 dark:bg-gray-700"
       )}
     >

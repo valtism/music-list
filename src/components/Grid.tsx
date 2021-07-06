@@ -23,6 +23,7 @@ import { CSS } from "@dnd-kit/utilities";
 import { restrictToWindowEdges } from "@dnd-kit/modifiers";
 
 import AlbumTile from "./AlbumTile";
+import PlaceholderTile from "./PlaceholderTile";
 import { albumAtom } from "../state/albumState";
 
 interface GridProps {
@@ -69,11 +70,13 @@ export default function Grid({ items, onDragEnd, children }: GridProps) {
       </SortableContext>
       {createPortal(
         <DragOverlay adjustScale={true} zIndex={10}>
-          {album && (
+          {album ? (
             <AlbumTile
               album={album}
               className="shadow-xl filter brightness-110"
             />
+          ) : (
+            <PlaceholderTile />
           )}
         </DragOverlay>,
         document.body
