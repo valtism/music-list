@@ -2,6 +2,8 @@ import { AlbumObject } from "spotify-api-types";
 import { atom } from "jotai";
 import { DragEndEvent } from "@dnd-kit/core";
 
+export const layoutAtom = atom([3, 3, 3]);
+
 export const gridIdsAtom = atom(
   Array(9)
     .fill(null)

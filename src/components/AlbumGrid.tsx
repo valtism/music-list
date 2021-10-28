@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, { useMemo, useState } from "react";
 
 import Grid, { SortableItem } from "./Grid";
 import AlbumTile from "./AlbumTile";
@@ -15,23 +15,33 @@ export default function AlbumGrid() {
   const ids = useAtomValue(gridIdsAtom);
   const onDragEnd = useUpdateAtom(onDragEndAtom);
 
+  const [cols, setCols] = useState(3);
+
   return (
-    <Grid items={ids} onDragEnd={onDragEnd}>
-      <ul
-        className="grid grid-cols-3 grid-rows-3 bg-gray-50 dark:bg-gray-900 select-none"
-        style={{
-          lineHeight: 0,
-          width: "90vw",
-          height: "90vw",
-          maxWidth: 576,
-          maxHeight: 576,
-        }}
-      >
-        {ids.map((id) => (
-          <GridItem key={id} id={id} />
-        ))}
-      </ul>
-    </Grid>
+    <>
+      <input
+        type="number"
+        value={cols}
+        onChange={(e) => setCols(Number(e.target.value))}
+        className="bg-transparent"
+      />
+      <Grid items={ids} onDragEnd={onDragEnd}>
+        <ul
+          className="grid grid-cols-3 grid-rows-3 bg-gray-50 dark:bg-gray-900 select-none"
+          style={{
+            lineHeight: 0,
+            width: "90vw",
+            height: "90vw",
+            maxWidth: 576,
+            maxHeight: 576,
+          }}
+        >
+          {ids.map((id) => (
+            <GridItem key={id} id={id} />
+          ))}
+        </ul>
+      </Grid>
+    </>
   );
 }
 
