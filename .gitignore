@@ -6,3 +6,4 @@ dist-ssr
 .vscode
 .eslintcache
 __reactpreview__
+/src/styles/tailwind.css

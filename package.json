@@ -1,10 +1,11 @@
 {
   "name": "music-list",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "scripts": {
-    "start": "vite",
-    "build": "tsc && vite build",
-    "serve": "vite preview"
+    "start": "npm run tailwind -- --watch & vite",
+    "build": "npm run tailwind && vite build",
+    "serve": "vite preview",
+    "tailwind": "tailwindcss -i src/styles/tailwind.src.css -o src/styles/tailwind.css"
   },
   "dependencies": {
     "@dnd-kit/core": "^4.0.3",
