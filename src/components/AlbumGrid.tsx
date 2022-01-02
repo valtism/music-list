@@ -19,12 +19,12 @@ export default function AlbumGrid() {
 
   return (
     <>
-      <input
+      {/* <input
         type="number"
         value={cols}
         onChange={(e) => setCols(Number(e.target.value))}
         className="bg-transparent"
-      />
+      /> */}
       <Grid items={ids} onDragEnd={onDragEnd}>
         <ul
           className="grid grid-cols-3 grid-rows-3 bg-gray-50 dark:bg-gray-900 select-none"

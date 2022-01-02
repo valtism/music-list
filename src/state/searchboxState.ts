@@ -42,7 +42,7 @@ export const onKeyDownAtom = atom(
   null,
   async (get, set, event: React.KeyboardEvent<HTMLDivElement>) => {
     const index = get(indexAtom);
-    const results = await get(searchAtom, true);
+    const results = await get(searchAtom, { unstable_promise: true });
 
     const incrementIndex = () => {
       if (!results) return;
